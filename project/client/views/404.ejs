@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/common-head.ejs', {pageTitle: "Page Not Found!"})%>
+    <link rel="stylesheet" href="/css/404.css">
+</head>
+
+<body>
+    <%- include('partials/navbar', {authenticated, currentPage: "home"}) %>
+    <header>
+        <div class="container">
+            Page <span class="highlight">not found!</span>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <svg class="error-image"></svg>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="/js/404.js"></script>
+</body>
+
+</html>

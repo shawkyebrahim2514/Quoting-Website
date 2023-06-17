@@ -1,0 +1,57 @@
+@import url('./messages.css');
+
+/* Style of the common form */
+
+form,
+.messages section {
+    padding: 1rem;
+}
+
+form {
+    display: grid;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1.2rem;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input,
+form textarea {
+    padding: 0.5rem;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+form .buttons {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+form input[type="submit"],
+form input[type="reset"] {
+    color: var(--light-color);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+form input[type="submit"] {
+    background-color: var(--main-color);
+}
+
+form input[type="reset"] {
+    background-color: var(--red-color);
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 1em;
+    height: auto;
+    overflow: hidden;
+}

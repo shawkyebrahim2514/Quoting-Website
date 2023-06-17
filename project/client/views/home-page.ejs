@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/common-head.ejs', {pageTitle: "Home page"})%>
+</head>
+
+<body>
+    <%- include('partials/overlay') %>
+    <%- include('partials/navbar', {authenticated, currentPage: "home"}) %>
+        <header>
+            <div class="container">
+                Start <span class="highlight">Quoting</span> Now!
+            </div>
+        </header>
+            <main>
+                <div class="container">
+                    <%- include('partials/messages') %>
+                    <% if (authenticated) { %>
+                        <%- include('partials/quote-form') %>
+                    <% } %>
+                    <div class="quote-editing" data-id="null">
+                        <div class="exit">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                        <%- include('partials/quote-form') %>
+                    </div>
+                    <div class="quotes-container">
+                    </div>
+                    <a href="#" class="btn load-more">Load more quotes</a>
+                </div>
+            </main>
+            <%- include('partials/footer') %>
+            <script src="js/home-page.js" type="module"></script>
+</body>
+
+</html>

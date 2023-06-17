@@ -1,0 +1,146 @@
+/* Navbar Styles */
+
+nav {
+    background-color: var(--dark-color);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    color: var(--light-color);
+    font-size: 1.2rem;
+}
+
+nav a {
+    color: var(--light-color);
+    height: 100%;
+}
+
+nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 64px;
+}
+
+nav .logo {
+    height: 100%;
+}
+
+nav .logo a {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+nav .links {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    transition: var(--transition);
+    height: 100%;
+}
+
+nav li {
+    padding: 0 14px;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+nav li.active {
+    background: var(--main-color);
+}
+
+nav .bars {
+    position: relative;
+    width: 30px;
+    height: 100%;
+    display: none;
+    cursor: pointer;
+}
+
+nav .bars span {
+    display: block;
+    background-color: var(--light-color);
+    height: 3px;
+    margin-bottom: 5px;
+    transition: var(--transition);
+}
+
+nav .bars.active span {
+    transform: rotateZ(45deg);
+    margin-bottom: -3px;
+}
+
+nav .bars.active span:last-child {
+    transform: rotateZ(-45deg);
+}
+
+nav .bars.active+ul {
+    transform: rotateX(0deg);
+}
+
+nav ul::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    background-color: #1a2238a3;
+    width: 100%;
+    left: 0;
+    height: 0;
+    transition: var(--transition);
+}
+
+nav .bars.active+ul::before {
+    height: 100vh;
+}
+
+@media (max-width: 768px) {
+    nav .container {
+        justify-content: center;
+    }
+
+    nav .links {
+        align-items: center;
+        position: absolute;
+        top: 100%;
+        background: var(--dark-color);
+        width: 100%;
+        justify-content: center;
+        left: 0;
+        padding: 14px 0;
+        height: 52px;
+    }
+
+    nav .bars {
+        display: block;
+    }
+
+    nav ul {
+        display: grid;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--dark-color);
+        width: 100%;
+        text-align: center;
+        transform: rotateX(90deg);
+        transform-origin: center top;
+        height: fit-content;
+    }
+
+    nav li {
+        padding: 15px 0;
+    }
+}

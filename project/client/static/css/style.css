@@ -1,0 +1,136 @@
+@import url('./overlay.css');
+@import url('./navbar.css');
+@import url('./body-footer.css');
+@import url('./spinner.css');
+@import url('./quotes.css');
+@import url('./form.css');
+
+:root {
+    --main-color: var(--purple);
+    --dark-color: #1A2238;
+    --light-color: #fff;
+    --red-color: #E55A42;
+    --purple: #99A9DD;
+    --border: 2px solid var(--dark-color);
+    --border-radius: 10px;
+    --transition: all 0.3s ease-in-out;
+    --shadow: 0px 1px 5px 1px #1a22382e;
+}
+
+::selection {
+    background-color: var(--main-color);
+    color: var(--light-color);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: #f8f9fc;
+    padding-top: 70px;
+    min-height: 100vh;
+    display: grid;
+    align-content: space-between;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 132px;
+    }
+}
+
+a {
+    text-decoration: none;
+    color: var(--dark-color);
+}
+
+.container {
+    max-width: 1360px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+}
+
+/* Common style between form, messages, and quotes*/
+
+form,
+.messages section,
+.quotes-container article {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    background-color: var(--light-color);
+}
+
+/* Style of the highlighted Text */
+
+span.highlight {
+    color: var(--main-color);
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 5px;
+    margin: 0 1rem;
+}
+
+span.highlight::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-color);
+    z-index: -1;
+    left: -1rem;
+    top: 0;
+    transform: rotateZ(-1deg);
+    padding: 0.15rem 1rem;
+    border-bottom: 4px solid var(--main-color);
+}
+
+/* Style fo the common header */
+
+body>header {
+    font-size: 2.4rem;
+    text-align: center;
+    line-height: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* Style of the main */
+
+main {
+    padding-bottom: 1rem;
+}
+
+main .container {
+    display: grid;
+    gap: 35px;
+}
+
+/* Style of buttons */
+
+.btn {
+    background-color: var(--main-color);
+    color: var(--light-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: none;
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+}
+
+.logout {
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: var(--light-color);
+    padding: 0.5rem 1rem;
+    background-color: var(--red-color);
+    border-radius: var(--border-radius);
+}

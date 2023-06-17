@@ -1,0 +1,24 @@
+<nav>
+    <div class="container">
+        <section class="logo">
+            <a href="/"><img src="/image/logo.svg" alt="Logo" style="height: 60%;"/></a>
+        </section>
+        <section class="links">
+            <div class="bars">
+                <span></span><span></span><span></span>
+            </div>
+            <ul>
+                <a href="/"><li <% if (currentPage === 'home') { %> class="active" <% } %>>Home</li></a>
+                <% if (!authenticated) { %>
+                    <a href="/login"><li <% if (currentPage === 'login') { %> class="active" <% } %>>Login</li></a>
+                <% } %>
+                <% if (!authenticated) { %>
+                    <a href="/register"><li <% if (currentPage === 'register') { %> class="active" <% } %>>Register</li></a>
+                <% } %>
+                <% if (authenticated) { %>
+                    <a href="/profile/<%= authenticated %>"><li <% if (currentPage === 'profile' && authorized) { %> class="active" <% } %>>Profile</li></a>
+                <% } %>
+            </ul>
+        </section>
+    </div>
+</nav>

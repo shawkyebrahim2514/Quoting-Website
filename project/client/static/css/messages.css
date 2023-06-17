@@ -1,0 +1,33 @@
+/* Style of page's messages */
+.messages {
+    display: none;
+    margin: 10px 0 0;
+    width: 100%;
+}
+
+.messages .container {
+    display: grid;
+    gap: 20px;
+}
+
+.messages section {
+    font-weight: bold;
+    display: none;
+}
+
+
+.messages .success-message {
+    color: var(--light-color);
+    background-color: var(--main-color);
+    border-color: var(--dark-color);
+}
+
+.messages .warning-message {
+    color: var(--light-color);
+    background-color: var(--red-color);
+    border-color: var(--dark-color);
+}
+
+:where(.messages, .messages .success-message, .messages .warning-message).show {
+    display: block !important;
+}

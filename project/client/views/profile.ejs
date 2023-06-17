@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('partials/common-head.ejs', {pageTitle: "Profile page"})%>
+</head>
+
+<body>
+    <%- include('partials/overlay') %>
+    <%- include('partials/navbar', {authenticated, authorized, currentPage: "profile"}) %>
+        <header>
+            <div class="container">
+                <% if (authorized) { %>Welcome <% } %>
+                        <%= user.first_name %>
+                            <%= user.last_name %><% if (authorized) { %>, <span class="logout">Logout</span>
+                                    <% } %>
+            </div>
+        </header>
+            <main>
+                <div class="container">
+                    <%- include('partials/messages') %>
+                    <% if (authorized) { %>
+                        <%- include('partials/quote-form') %>
+                    <% } %>
+                    <div class="quote-editing" data-id="null">
+                        <div class="exit">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
+                        <%- include('partials/messages') %>
+                        <%- include('partials/quote-form') %>
+                    </div>
+                    <div class="quotes-container">
+                    </div>
+                    <a href="#" class="btn load-more">Load more quotes</a>
+                </div>
+            </main>
+            <%- include('partials/footer') %>
+                <script src="/js/home-page.js" type="module"></script>
+                <script src="/js/profile.js" type="module"></script>
+</body>
+
+</html>

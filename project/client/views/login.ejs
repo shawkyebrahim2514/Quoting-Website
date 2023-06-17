@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/common-head.ejs', {pageTitle: "Login Page"})%>
+</head>
+<body>
+    <%- include('partials/navbar', {authenticated: false, currentPage: "login"}) %>
+    <header>
+        <div class="container">
+            <span class="highlight">Login</span> and Start Quoting!
+        </div>
+    </header>
+    <%- include('partials/messages') %>
+    <main>
+        <div class="container">
+            <form action="#" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" placeholder="Enter here your username">
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" placeholder="Enter here your password">
+                <div class="buttons">
+                    <input type="reset" name="reset" id="reset" value="RESET"/>
+                    <input type="submit" name="submit" id="submit" value="SUBMIT"/>
+                </div>
+            </form>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="js/login.js" type="module"></script>
+</body>
+</html>

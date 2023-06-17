@@ -1,0 +1,39 @@
+// initialize the node project
+npm init -y
+
+npm install express apollo-server-express graphql
+
+
+// to run the server
+node index
+
+// monitor the server
+npm install -g nodemon
+npm install --save-dev nodemon
+nodemon [your node app]
+
+// Install the ejs engine
+npm install ejs  
+
+// Install the body parser
+npm install body-parser
+
+// Install dependencies for authentications
+npm install bcryptjs express-session cookie-parser
+
+// to connect with SQLite
+npm install sqlite3
+
+// To query the GrahQL using fetch API
+await fetch('http://localhost:4000', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query: 'query { hello }' }),
+}).then((response) => response.json())
+  .then((data) => console.log(data))
+
+// to use the .env file in the project
+npm install dotenv
+
