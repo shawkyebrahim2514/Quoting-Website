@@ -4,12 +4,13 @@ const resolvers = require("./resolvers/resolvers");
 
 async function runApolloServer(app) {
   const server = new ApolloServer({
-    typeDefs, 
-    resolvers, 
+    typeDefs,
+    resolvers,
     context: ({ req }) => ({
       req: req,
       session: req.session,
     }),
+    introspection: true,
   });
   await server.start();
   server.applyMiddleware({ app, path: "/graphql" });
