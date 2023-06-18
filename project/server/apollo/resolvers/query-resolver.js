@@ -12,9 +12,9 @@ const queryResolver = {
         return { success: false, message: error };
       }
     },
-    users: async (parent, { offset }, context) => {
+    users: async (parent, args, context) => {
       try {
-        let users = await User.getAllUsers(offset);
+        let users = await User.getAllUsers();
         return users;
       } catch (error) {
         return [];

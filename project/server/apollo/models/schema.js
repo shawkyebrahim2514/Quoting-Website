@@ -5,7 +5,7 @@ const typeDefs = gql`
     "Check user credentials"
     userAuthentication(username: String!, password: String!): UserAuthenticationResponse!
     "Get all users in the database"
-    users(offset: Int!): [User!]!
+    users: [User!]!
     "Get a user by email"
     user(username: String!): User
     "Get all quotes in the database that belong to a user"
