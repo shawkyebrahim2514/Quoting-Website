@@ -37,3 +37,7 @@ await fetch('http://localhost:4000', {
 // to use the .env file in the project
 npm install dotenv
 
+
+// to load the .env file in the runtime
+node --require dotenv/config index.js
+

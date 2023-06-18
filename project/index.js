@@ -6,13 +6,13 @@ const runApolloServer = require("./server/apollo/apollo-server");
 const { appRouters } = require("./server/app");
 const app = express();
 const path = require("path");
-require('dotenv').config({ path: 'server/config/.env' });
+const PORT = process.env.PORT || 4000;
 
 app.use(cookieParser());
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
 }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -26,14 +26,14 @@ runApolloServer(app);
 
 app.use("/", appRouters);
 
-app.use('/',(req, res, next) => {
-  if(req.path === '/graphql') {
+app.use('/', (req, res, next) => {
+  if (req.path === '/graphql') {
     return next();
   } else {
     res.render('404', { authenticated: req.session.username });
   }
 });
 
-app.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

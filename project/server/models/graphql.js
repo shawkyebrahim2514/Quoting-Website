@@ -1,4 +1,3 @@
-require('dotenv').config({ path: 'server/config/.env' });
 // Get the graphql url from the .env file
 const baseUrl = process.env.NODE_ENV === 'production' ? process.env.HOST_DOMAIN : process.env.DEVELOPMENT_DOMAIN;
 const graphqlUrl = `${baseUrl}/graphql`;
