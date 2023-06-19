@@ -47,7 +47,7 @@ To run this project locally, you need to have the following prerequisites instal
 2. Install dependencies:
 
    ```bash
-    cd quoting-website
+    cd project
     npm install
    ```
 
