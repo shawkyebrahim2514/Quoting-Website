@@ -4,7 +4,7 @@ const { checkUserLoggedIn } = require("./util/authentications.js");
 const { quoteController } = require("./quote.js");
 
 router.get("/", (req, res) => {
-    res.render("home-page", { authenticated: req.session.username });
+    res.render("home-page", { authenticated: req.session.user ? req.session.user.username : null });
 });
 
 router.post("/logout", checkUserLoggedIn, (req, res) => {

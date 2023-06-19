@@ -26,14 +26,6 @@ runApolloServer(app);
 
 app.use("/", appRouters);
 
-app.use('/', (req, res, next) => {
-  if (req.path === '/graphql') {
-    return next();
-  } else {
-    res.render('404', { authenticated: req.session.username });
-  }
-});
-
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

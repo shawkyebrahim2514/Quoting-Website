@@ -8,7 +8,6 @@ async function runApolloServer(app) {
     resolvers,
     context: ({ req }) => ({
       req: req,
-      session: req.session,
     }),
     introspection: true,
   });

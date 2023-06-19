@@ -8,7 +8,7 @@ router.post("/create-quote", checkUserLoggedIn, async (req, res) => {
     let quote = parseQuote(req);
     let response = await QuoteModel.createQuote(quote, req.sessionID);
     if (response.success) {
-        response.quote = formQuoteResponse(response.quote, req.session.username);
+        response.quote = formQuoteResponse(response.quote, req.session.user ? req.session.user.username : null);
     }
     return res.json(response);
 });
@@ -17,7 +17,7 @@ router.post("/get-quotes", async (req, res) => {
     let offset = req.body.offset;
     let response = await QuoteModel.getQuotes({ offset, sessionId: req.sessionID });
     if (response) {
-        response = formQuotesResponse(response, req.session.username);
+        response = formQuotesResponse(response, req.session.user ? req.session.user.username : null);
     }
     return res.json(response);
 });

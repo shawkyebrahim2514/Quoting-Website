@@ -86,12 +86,12 @@ function addQuoteEditingExitEvent() {
 function addQuoteEditingSubmitEvent() {
     document.querySelector(".quote-editing form").addEventListener("submit", async function (event) {
         event.preventDefault();
-        let formData = parseUpdateFormData(this);
-        let isValidFormData = checkValidFormData(formData);
+        let isValidFormData = checkValidQuoteFormInputs(this);
         if (!isValidFormData) {
             showMessage(this, "Inputs are invalid!", false);
             return;
         }
+        let formData = parseUpdateFormData(this);
         let response = await sendUpdateQuoteRequest(formData);
         if (response.success) {
             updateQuoteArticle(this.parentNode.attributes['data-id'].value, response.quote);
