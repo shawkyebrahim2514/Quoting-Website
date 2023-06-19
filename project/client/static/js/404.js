@@ -1,10 +1,15 @@
-window.addEventListener('load', loadErrorImage);
+import { hideOverlay, addToggleNavbarLinks } from "./main.js";
+
+window.addEventListener('load', () => {
+    loadErrorImage();
+    addToggleNavbarLinks();
+    hideOverlay();
+});
 
 function loadErrorImage() {
     fetch('/image/404.svg')
         .then(response => response.text())
         .then(svgContent => {
-            console.log('SVG content:', svgContent);
             const svgContainer = document.querySelector('svg.error-image');
             svgContainer.innerHTML = svgContent;
         })

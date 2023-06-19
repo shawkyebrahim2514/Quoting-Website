@@ -23,7 +23,7 @@ function parseRegisterRequestBody(req) {
         password: req.body.password,
         email: req.body.email,
         first_name: req.body.first_name,
-        last_name: req.body.second_name,
+        last_name: req.body.last_name,
     };
     return user;
 }

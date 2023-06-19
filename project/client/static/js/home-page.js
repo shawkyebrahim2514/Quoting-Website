@@ -1,21 +1,52 @@
-import { createQuoteElement } from "./home-page-quotes.js";
+import { createQuoteElement } from "./quote-creation.js";
+import { hideOverlay, addToggleNavbarLinks } from "./main.js";
+import { getQuotes, sendCreateQuoteRequest, sendUpdateQuoteRequest } from "./quote-requests.js";
+import { checkValidQuoteFormInputs } from "./form-validations.js";
+import { showMessage } from "./messages.js";
 
 window.addEventListener('load', () => {
+    addLoadMoreEvent();
     addFormSubmitEvent();
-    addQuoteEditingEvents();
+    addQuoteWindowEditingEvents();
+    addToggleNavbarLinks();
+    document.querySelector(".load-more").click();
+    hideOverlay();
 });
+
+let quotes = getQuotes();
+
+function addLoadMoreEvent() {
+    document.querySelector(".load-more").addEventListener("click", async (event) => {
+        event.preventDefault();
+        let quotesData = await quotes.next();
+        if (quotesData.done) {
+            removeLoadMoreButton();
+            return;
+        }
+        let quotesContainer = document.querySelector(".quotes-container");
+        quotesData.value.forEach(quote => {
+            let quoteElement = createQuoteElement(quote);
+            quotesContainer.appendChild(quoteElement);
+        });
+    });
+}
+
+function removeLoadMoreButton() {
+    let loadMoreButton = document.querySelector(".load-more");
+    loadMoreButton.parentNode.removeChild(loadMoreButton);
+}
 
 function addFormSubmitEvent() {
     let form = document.querySelector("form");
     if (form) {
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
-            let formData = parseFormData(this);
-            let isValidFormData = checkValidFormData(formData);
+            let isValidFormData = checkValidQuoteFormInputs(this);
             if (!isValidFormData) {
                 showMessage(this, "Inputs are invalid!", false);
                 return;
             }
+            let formData = parseFormData(this);
             let response = await sendCreateQuoteRequest(formData);
             if (response.success) {
                 showMessage(this, "Quote created successfully!", true);
@@ -34,74 +65,22 @@ function parseFormData(form) {
     return serializedData;
 }
 
-function checkValidFormData(formData) {
-    let data = formData.split("&");
-    let isValid = true;
-    for (const element of data) {
-        let keyValuePair = element.split("=");
-        let value = keyValuePair[1];
-        if (value === "") {
-            isValid = false;
-            break;
-        }
-    }
-    return isValid;
-}
-
-async function sendCreateQuoteRequest(formData) {
-    const response = await (await fetch('/create-quote', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-    })).json();
-    return response;
-}
-
-function showMessage(form, message, success) {
-    if (success) {
-        showSuccess(form, message);
-        setTimeout(() => {
-            showSuccess(form, message);
-        }, 3000);
-    } else {
-        showWarning(form, message);
-        setTimeout(() => {
-            showWarning(form, message);
-        }, 3000);
-    }
-}
-
-function showWarning(form, warning) {
-    // let messages = document.querySelector(".messages");
-    let messages = form.previousElementSibling;
-    messages.classList.toggle("show");
-    let warningMessage = messages.querySelector(".warning-message");
-    warningMessage.classList.toggle("show");
-    warningMessage.innerHTML = warning;
-}
-
-function showSuccess(form, successMessage) {
-    // let messages = document.querySelector(".messages");
-    let messages = form.previousElementSibling;
-    messages.classList.toggle("show");
-    let successSection = messages.querySelector(".success-message");
-    successSection.classList.toggle("show");
-    successSection.innerHTML = successMessage;
-}
-
 function showNewQuote(quote) {
     let quotes = document.querySelector(".quotes-container");
     let quoteElement = createQuoteElement(quote);
     quotes.insertBefore(quoteElement, quotes.firstChild);
 }
 
-// ------------------------------
-
-function addQuoteEditingEvents() {
-    addQuoteEditingSubmitEvent();
+function addQuoteWindowEditingEvents() {
     addQuoteEditingExitEvent();
+    addQuoteEditingSubmitEvent();
+}
+
+function addQuoteEditingExitEvent() {
+    document.querySelector(".quote-editing .exit").addEventListener("click", function (event) {
+        event.preventDefault();
+        this.parentNode.classList.toggle("show");
+    });
 }
 
 function addQuoteEditingSubmitEvent() {
@@ -135,22 +114,4 @@ function parseUpdateFormData(form) {
     let formData = parseFormData(form);
     formData += "&id=" + form.parentNode.attributes["data-id"].value;
     return formData;
-}
-
-async function sendUpdateQuoteRequest(formData) {
-    const response = await (await fetch('/update-quote', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-    })).json();
-    return response;
-}
-
-function addQuoteEditingExitEvent() {
-    document.querySelector(".quote-editing .exit").addEventListener("click", function (event) {
-        event.preventDefault();
-        this.parentNode.classList.toggle("show");
-    });
 }

@@ -7,6 +7,7 @@
 </head>
 
 <body>
+    <%- include('partials/overlay') %>
     <%- include('partials/navbar', {authenticated, currentPage: "home"}) %>
     <header>
         <div class="container">
@@ -19,7 +20,7 @@
         </div>
     </main>
     <%- include('partials/footer') %>
-    <script src="/js/404.js"></script>
+    <script src="/js/404.js" type="module"></script>
 </body>
 
 </html>

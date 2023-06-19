@@ -15,7 +15,7 @@ router.post("/create-quote", checkUserLoggedIn, async (req, res) => {
 
 router.post("/get-quotes", async (req, res) => {
     let offset = req.body.offset;
-    let response = await QuoteModel.getQuotes({ offset, loggedInUser: req.session.username, sessionId: req.sessionID });
+    let response = await QuoteModel.getQuotes({ offset, sessionId: req.sessionID });
     if (response) {
         response = formQuotesResponse(response, req.session.username);
     }

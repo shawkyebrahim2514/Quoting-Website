@@ -16,7 +16,7 @@ function checkProfileAuthorization(req) {
 
 router.post("/:username/get-quotes", async (req, res) => {
     let offset = req.body.offset;
-    let response = await QuoteModel.getQuotes({ offset, loggedInUser: req.session.username, username: req.params.username });
+    let response = await QuoteModel.getQuotes({ offset, username: req.params.username, sessionId: req.sessionID });
     if (response) {
         response = formQuotesResponse(response, req.session.username);
     }

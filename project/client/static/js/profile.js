@@ -1,3 +1,5 @@
+import { sendLogoutRequest } from "./user-requests.js";
+
 window.addEventListener('load', () => {
     addLogoutEvent();
 });
@@ -13,17 +15,4 @@ function addLogoutEvent() {
             }
         });
     }
-}
-
-async function sendLogoutRequest() {
-    const response = await (await fetch('/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })).json();
-    if (response.success) {
-        location.href = "/login";
-    }
-    return response;
 }

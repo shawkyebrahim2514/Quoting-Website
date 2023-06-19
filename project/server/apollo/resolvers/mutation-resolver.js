@@ -1,10 +1,15 @@
 const User = require("../models/User");
 const Quote = require("../models/Quote");
 const { validateSession } = require("./util/authorization");
+const { checkUserValidation, checkQuoteValidation } = require("./util/validations");
 
 const mutationResolver = {
     Mutation: {
         createUser: async (_, { input }, context) => {
+            let userValidation = checkUserValidation(input);
+            if (!userValidation.valid) {
+                return { success: false, message: userValidation.message };
+            }
             try {
                 let message = await User.createUser(input);
                 return { success: true, message: message };
@@ -16,6 +21,10 @@ const mutationResolver = {
             const username = validateSession(context.req);
             if (!username) {
                 return { success: false, message: "Unauthorized operation!", quote: null };
+            }
+            let quoteValidation = checkQuoteValidation(input);
+            if (!quoteValidation.valid) {
+                return { success: false, message: quoteValidation.message, quote: null };
             }
             try {
                 let lastInsertedId = await Quote.createQuote({ quoteData: input, username });

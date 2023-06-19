@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('partials/common-head.ejs', {pageTitle: "Login Page"})%>
+    <%- include('partials/common-head.ejs', {pageTitle: "Login"})%>
 </head>
 <body>
+    <%- include('partials/overlay') %>
     <%- include('partials/navbar', {authenticated: false, currentPage: "login"}) %>
     <header>
         <div class="container">
             <span class="highlight">Login</span> and Start Quoting!
         </div>
     </header>
-    <%- include('partials/messages') %>
     <main>
         <div class="container">
+            <%- include('partials/messages') %>
             <form action="#" method="POST">
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" placeholder="Enter here your username">

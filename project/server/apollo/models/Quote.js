@@ -1,4 +1,5 @@
 const connection = require("./databaseConnection");
+const { convertQueriesDate, convertQueryDate } = require("./util");
 class Quote {
   // The common query for getting quotes
   // It allows a condition to be added to the query
@@ -6,20 +7,20 @@ class Quote {
   // It allows an orderBy to be added to the query
   // It uses the loggedUser to check if the quote is liked by this user
   static #getQuoteQuery({
-    condition, offset = 0, orderBy = "numberOfLikes", loggedInUser = null
+    condition, offset = 0, orderBy = "created_at desc", loggedInUser = null
   }) {
     let query = `select ${loggedInUser ? `exists(select quote_id from QuoteLike where quote_id = q.id and username = '${loggedInUser}')` : 0} as isLiked,
             q.id,
             title,
             content,
             q.username,
-            created_at,
+            strftime('%s', 'now') - strftime('%s', created_at) AS created_at,
             count(ql.quote_id) as numberOfLikes
             from Quote as q
             left join QuoteLike as ql on ql.quote_id = q.id
             ${condition}
             group by q.id
-            order by ${orderBy} desc
+            order by ${orderBy}
             limit 6 offset ${offset}`;
     return query;
   }
@@ -30,13 +31,13 @@ class Quote {
         Quote.#getQuoteQuery({
           condition: `where q.username = '${username}'`,
           offset: offset,
-          orderBy: "created_at",
           loggedInUser: loggedInUser
         }),
         (err, rows) => {
           if (err) {
             reject("Error while getting quotes!");
           } else {
+            convertQueriesDate(rows);
             resolve(rows);
           }
         }
@@ -56,7 +57,9 @@ class Quote {
             reject("Error while getting quote!");
           } else {
             // the required quote is the first element in the array
-            resolve(rows[0]);
+            let quote = rows[0];
+            convertQueryDate(quote);
+            resolve(quote);
           }
         }
       );
@@ -68,11 +71,13 @@ class Quote {
       connection.all(Quote.#getQuoteQuery({
         condition: "",
         offset: offset,
+        orderBy: "numberOfLikes desc, created_at desc",
         loggedInUser: loggedInUser
       }), (err, rows) => {
         if (err) {
           reject("Error while getting quotes!");
         } else {
+          convertQueriesDate(rows);
           resolve(rows);
         }
       });
