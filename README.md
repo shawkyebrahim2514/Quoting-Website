@@ -51,6 +51,10 @@ To run this project locally, you need to have the following prerequisites instal
     npm install
    ```
 
+3. Create the Environment file
+    - Create a `.env` file on the root folder `project`
+    - Add the same information from `.env.example` file into this created `.env` file
+
 ## Usage
 
 1. Start the development server:
