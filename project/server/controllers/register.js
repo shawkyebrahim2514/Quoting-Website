@@ -1,20 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/User.js");
-const { checkUserUnloggedIn, createUserSession } = require("./util/authentications.js");
-
+const User = require("./graphql/User");
+const { checkUserUnloggedIn, createJWTToken } = require("./util/authentications.js");
 
 router.get("/", checkUserUnloggedIn, (req, res) => {
     res.render("register");
 });
 
-router.post("/", async (req, res) => {
-    let user = parseRegisterRequestBody(req);
-    let response = await UserModel.createUser(user);
-    if (response.success) {
-        createUserSession(req, user);
-    }
-    return res.json(response);
+router.post("/", (req, res) => {
+    (async () => {
+        try {
+            let user = parseRegisterRequestBody(req);
+            let response = await User.createUser(user);
+            if (response.success) {
+                const token = createJWTToken(user);
+                res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+                res.json({ success: true, message: 'Registration successful' });
+            } else {
+                res.status(401).json({ success: false, message: 'User Exists before!' });
+            }
+        } catch (error) {
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    })();
 });
 
 function parseRegisterRequestBody(req) {

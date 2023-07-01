@@ -1,19 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/User.js");
-const { checkUserUnloggedIn, createUserSession } = require("./util/authentications.js");
+const User = require("./graphql/User");
+const { checkUserUnloggedIn, createJWTToken } = require("./util/authentications.js");
 
 router.get("/", checkUserUnloggedIn, (req, res) => {
     res.render("login");
 });
 
-router.post("/", async (req, res) => {
-    let user = parseLoginRequestBody(req);
-    let response = await UserModel.checkUserAuthentication(user);
-    if (response.success) {
-        createUserSession(req, user);
-    }
-    return res.json(response);
+router.post("/", (req, res) => {
+    (async () => {
+        try {
+            const user = parseLoginRequestBody(req);
+            const response = await User.checkUserAuthentication(user);
+            if (response.success) {
+                const token = createJWTToken(user);
+                res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+                res.json({ success: true, message: 'Login successful', token });
+            } else {
+                res.status(401).json({ success: false, message: 'Invalid credentials' });
+            }
+        } catch (error) {
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    })();
 });
 
 function parseLoginRequestBody(req) {

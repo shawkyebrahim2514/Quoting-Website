@@ -1,22 +1,48 @@
+const jwt = require('jsonwebtoken');
+
 function checkUserLoggedIn(req, res, next) {
-    if (req.session.user) {
-        return next();
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).redirect('/register');
+        // return res.redirect('/register');
     }
-    res.redirect('/register');
+    const decoded = decodeJWT(token);
+    if (!decoded) {
+        return res.redirect('/register');
+    }
+    next();
 }
 
 function checkUserUnloggedIn(req, res, next) {
-    if (!req.session.user) {
+    const token = req.headers.authorization;
+    if (!token) {
         return next();
     }
-    res.redirect('/profile');
+    const decoded = decodeJWT(token);
+    if (!decoded) {
+        return next();
+    }
+    res.redirect('/');
 }
 
-function createUserSession(req, user) {
-    req.session.user = {
-        username: user.username,
-    };
-    req.session.save();
+function createJWTToken(user) {
+    const payload = { username: user.username };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return token;
 }
 
-module.exports = { checkUserLoggedIn, checkUserUnloggedIn, createUserSession };
+function decodeJWT(authHeader) {
+    if (!authHeader) return false;
+    const token = authHeader;
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            return decoded;
+        } catch (error) {
+            return false;
+        }
+    }
+    return false;
+}
+
+module.exports = { checkUserLoggedIn, checkUserUnloggedIn, createJWTToken, decodeJWT };

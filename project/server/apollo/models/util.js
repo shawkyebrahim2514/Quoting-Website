@@ -1,3 +1,5 @@
+const bcrypt = require("bcryptjs");
+
 function convertSecondsToDuration(seconds) {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -5,12 +7,12 @@ function convertSecondsToDuration(seconds) {
     const weeks = Math.floor(days / 7);
     const years = Math.floor(days / 365);
 
-    if (years) return years + ' years';
-    if (weeks) return weeks + ' weeks';
-    if (days) return days + ' days';
-    if (hours) return hours + ' hours';
-    if (minutes) return minutes + ' minutes';
-    return seconds + ' seconds';
+    if (years) return years + ' year' + (years > 1 ? 's' : '');
+    if (weeks) return weeks + ' week' + (weeks > 1 ? 's' : '');
+    if (days) return days + ' day' + (days > 1 ? 's' : '');
+    if (hours) return hours + ' hour' + (hours > 1 ? 's' : '');
+    if (minutes) return minutes + ' minute' + (minutes > 1 ? 's' : '');
+    return seconds + ' second' + (seconds > 1 ? 's' : '');
 }
 
 
@@ -24,4 +26,13 @@ function convertQueryDate(query) {
     query.created_at = convertSecondsToDuration(query.created_at);
 }
 
-module.exports = { convertQueriesDate, convertQueryDate };
+function checkValidPassword(password, hashedPassword) {
+    return bcrypt.compareSync(password, hashedPassword);
+}
+
+function hashUserPassword(user) {
+    const salt = bcrypt.genSaltSync(10);
+    user.password = bcrypt.hashSync(user.password, salt);
+}
+
+module.exports = { convertQueriesDate, convertQueryDate, checkValidPassword, hashUserPassword };

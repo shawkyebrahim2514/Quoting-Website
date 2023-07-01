@@ -10,23 +10,25 @@ window.addEventListener('load', () => {
 });
 
 function addFormSubmitEvent() {
-    document.querySelector("form").addEventListener("submit", async function (event) {
+    document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
-        if (!checkValidRegistrationInputs(this)) {
-            showMessage(this, "Invalid inputs", false);
-            window.scrollTo(0, 0);
-            return;
-        }
-        if (checkMatchedPasswords(this)) {
-            let response = await sendRegisterationRequest(this);
-            if (response.success) {
-                window.location.href = "./";
-            } else {
-                showMessage(this, response.message, false);
+        (async () => {
+            if (!checkValidRegistrationInputs(this)) {
+                showMessage(this, "Invalid inputs", false);
+                window.scrollTo(0, 0);
+                return;
             }
-        } else {
-            showMessage(this, "Passwords do not match", false);
-        }
+            if (checkMatchedPasswords(this)) {
+                let response = await sendRegisterationRequest(this);
+                if (response.success) {
+                    window.location.href = "./";
+                } else {
+                    showMessage(this, response.message, false);
+                }
+            } else {
+                showMessage(this, "Passwords do not match", false);
+            }
+        })();
     });
 }
 

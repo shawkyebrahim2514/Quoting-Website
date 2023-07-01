@@ -10,17 +10,19 @@ window.addEventListener('load', () => {
 });
 
 function addFormSubmitEvent() {
-    document.querySelector("form").addEventListener("submit", async function (event) {
+    document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
-        if(!checkValidLoginInputs(this)) {
-            showMessage(this, "Invalid inputs", false);
-            return;
-        }
-        let response = await sendLoginRequest(this);
-        if (response.success) {
-            window.location.href = "./";
-        } else {
-            showMessage(this, response.message, false);
-        }
+        (async () => {
+            if(!checkValidLoginInputs(this)) {
+                showMessage(this, "Invalid inputs", false);
+                return;
+            }
+            let response = await sendLoginRequest(this);
+            if (response.success) {
+                window.location.href = "./";
+            } else {
+                showMessage(this, response.message, false);
+            }
+        })();
     });
 }

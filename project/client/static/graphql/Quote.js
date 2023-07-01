@@ -1,7 +1,7 @@
-const graphql = require("./graphql.js");
+import { graphQLRequest } from './request.js';
 
 class Quote {
-    static async createQuote(userData, sessionId = null) {
+    static async createQuote(quoteData) {
         let query = `mutation CreateQuote($input: CreateQuoteInput!) {
                         createQuote(input: $input) {
                             success
@@ -12,6 +12,8 @@ class Quote {
                                 created_at
                                 numberOfLikes
                                 isLiked
+                                isLogged
+                                isOwned
                                 author {
                                     username
                                     first_name
@@ -21,13 +23,13 @@ class Quote {
                         }
                     }`
         let variables = {
-            input: userData,
+            input: quoteData,
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response.createQuote;
+        const response = await graphQLRequest({ query, variables });
+        return response.data.createQuote;
     }
 
-    static async getQuotes({ offset, username = null, sessionId = null }) {
+    static async getQuotes({ offset, username = null }) {
         // It will check if the user logged through the session of the user
         let query = `query GetQuotes($offset: Int!, $username: String) {
                         quotes(offset: $offset, username: $username) {
@@ -37,6 +39,8 @@ class Quote {
                             created_at
                             numberOfLikes
                             isLiked
+                            isLogged
+                            isOwned
                             author {
                                 username
                                 first_name
@@ -48,11 +52,12 @@ class Quote {
             offset: offset,
             username: username
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response.quotes;
+        const response = await graphQLRequest({ query, variables });
+        console.log(response);
+        return response.data.quotes;
     }
 
-    static async likeQuote(quoteId, sessionId = null) {
+    static async likeQuote(quoteId) {
         let query = `mutation($quoteId: Int!) {
             likeQuote(quote_id: $quoteId) {
                     success
@@ -62,11 +67,11 @@ class Quote {
         let variables = {
             quoteId: quoteId,
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response;
+        const response = await graphQLRequest({ query, variables });
+        return response.data.likeQuote;
     }
 
-    static async dislikeQuote(quoteId, sessionId = null) {
+    static async dislikeQuote(quoteId) {
         let query = `mutation($quoteId: Int!) {
                         dislikeQuote(quote_id: $quoteId) {
                             success
@@ -76,11 +81,11 @@ class Quote {
         let variables = {
             quoteId: quoteId,
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response;
+        const response = await graphQLRequest({ query, variables });
+        return response.data.dislikeQuote;
     }
 
-    static async deleteQuote(quoteId, sessionId = null) {
+    static async deleteQuote(quoteId) {
         let query = `mutation($quoteId: Int!) {
             deleteQuote(quote_id: $quoteId) {
                     success
@@ -90,26 +95,30 @@ class Quote {
         let variables = {
             quoteId: quoteId,
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response;
+        const response = await graphQLRequest({ query, variables });
+        return response.data.deleteQuote;
     }
 
-    static async updateQuote(quoteData, sessionId = null) {
+    static async updateQuote(quoteData) {
         let query = `mutation($input: UpdateQuoteInput!) {
             updateQuote(input: $input) {
                     success
                     quote {
                         title
                         content
+                        isLiked
+                        isLogged
+                        isOwned
                     }
                 }
             }`
         let variables = {
             input: quoteData,
         };
-        const response = await graphql.createRequest({ query, variables, sessionId });
-        return response.updateQuote;
+        const response = await graphQLRequest({ query, variables });
+        console.log("Updated response: ", response);
+        return response.data.updateQuote;
     }
 }
 
-module.exports = Quote;
+export default Quote;

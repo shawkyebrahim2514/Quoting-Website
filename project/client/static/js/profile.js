@@ -7,12 +7,14 @@ window.addEventListener('load', () => {
 function addLogoutEvent() {
     let logoutButton = document.querySelector(".logout");
     if (logoutButton) {
-        logoutButton.addEventListener("click", async function (event) {
+        logoutButton.addEventListener("click", function (event) {
             event.preventDefault();
-            let response = await sendLogoutRequest();
-            if (response.success) {
-                location.href = "/login";
-            }
+            (async () => {
+                let response = await sendLogoutRequest();
+                if (response.success) {
+                    location.href = "/";
+                }
+            })();
         });
     }
 }

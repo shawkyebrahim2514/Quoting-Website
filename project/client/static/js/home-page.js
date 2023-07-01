@@ -5,29 +5,33 @@ import { checkValidQuoteFormInputs } from "./form-validations.js";
 import { showMessage } from "./messages.js";
 
 window.addEventListener('load', () => {
-    addLoadMoreEvent();
+    addToggleNavbarLinks();
     addFormSubmitEvent();
     addQuoteWindowEditingEvents();
-    addToggleNavbarLinks();
+    addLoadMoreEvent();
     document.querySelector(".load-more").click();
     hideOverlay();
 });
 
-let quotes = getQuotes();
+console.log(document.location.pathname.split("/"));
+
+let quotes = getQuotes(document.location.pathname.split("/").at(-1));
 
 function addLoadMoreEvent() {
-    document.querySelector(".load-more").addEventListener("click", async (event) => {
+    document.querySelector(".load-more").addEventListener("click", (event) => {
         event.preventDefault();
-        let quotesData = await quotes.next();
-        if (quotesData.done) {
-            removeLoadMoreButton();
-            return;
-        }
-        let quotesContainer = document.querySelector(".quotes-container");
-        quotesData.value.forEach(quote => {
-            let quoteElement = createQuoteElement(quote);
-            quotesContainer.appendChild(quoteElement);
-        });
+        (async () => {
+            let quotesData = await quotes.next();
+            if (quotesData.done) {
+                removeLoadMoreButton();
+                return;
+            }
+            let quotesContainer = document.querySelector(".quotes-container");
+            quotesData.value.forEach(quote => {
+                let quoteElement = createQuoteElement(quote);
+                quotesContainer.appendChild(quoteElement);
+            });
+        })();
     });
 }
 
@@ -39,30 +43,34 @@ function removeLoadMoreButton() {
 function addFormSubmitEvent() {
     let form = document.querySelector("form");
     if (form) {
-        form.addEventListener("submit", async function (event) {
+        form.addEventListener("submit", function (event) {
             event.preventDefault();
-            let isValidFormData = checkValidQuoteFormInputs(this);
-            if (!isValidFormData) {
-                showMessage(this, "Inputs are invalid!", false);
-                return;
-            }
-            let formData = parseFormData(this);
-            let response = await sendCreateQuoteRequest(formData);
-            if (response.success) {
-                showMessage(this, "Quote created successfully!", true);
-                showNewQuote(response.quote);
-                this.elements["reset"].click();
-            } else {
-                showMessage(this, "Failed to create quote!", false);
-            }
+            (async () => {
+                let isValidFormData = checkValidQuoteFormInputs(this);
+                if (!isValidFormData) {
+                    showMessage(this, "Inputs are invalid!", false);
+                    return;
+                }
+                let formData = parseFormData(this);
+                let response = await sendCreateQuoteRequest(formData);
+                if (response.success) {
+                    showMessage(this, "Quote created successfully!", true);
+                    showNewQuote(response.quote);
+                    this.elements["reset"].click();
+                } else {
+                    showMessage(this, "Failed to create quote!", false);
+                }
+            })();
         });
     }
 }
 
 function parseFormData(form) {
-    let formData = new FormData(form);
-    let serializedData = new URLSearchParams(formData).toString();
-    return serializedData;
+    let quoteData = {
+        title: form.elements["title"].value,
+        content: form.elements["content"].value,
+    };
+    return quoteData;
 }
 
 function showNewQuote(quote) {
@@ -79,26 +87,30 @@ function addQuoteWindowEditingEvents() {
 function addQuoteEditingExitEvent() {
     document.querySelector(".quote-editing .exit").addEventListener("click", function (event) {
         event.preventDefault();
-        this.parentNode.classList.toggle("show");
+        // this.parentNode.parentNode is the quote editing window
+        this.parentNode.parentNode.classList.toggle("show");
     });
 }
 
 function addQuoteEditingSubmitEvent() {
-    document.querySelector(".quote-editing form").addEventListener("submit", async function (event) {
+    document.querySelector(".quote-editing form").addEventListener("submit", function (event) {
         event.preventDefault();
-        let isValidFormData = checkValidQuoteFormInputs(this);
-        if (!isValidFormData) {
-            showMessage(this, "Inputs are invalid!", false);
-            return;
-        }
-        let formData = parseUpdateFormData(this);
-        let response = await sendUpdateQuoteRequest(formData);
-        if (response.success) {
-            updateQuoteArticle(this.parentNode.attributes['data-id'].value, response.quote);
-            document.querySelector(".quote-editing .exit").click();
-        } else {
-            showMessage(this, "Failed to update the quote!", false);
-        }
+        (async () => {
+            let isValidFormData = checkValidQuoteFormInputs(this);
+            if (!isValidFormData) {
+                showMessage(this, "Inputs are invalid!", false);
+                return;
+            }
+            let formData = parseUpdateFormData(this);
+            let response = await sendUpdateQuoteRequest(formData);
+            if (response.success) {
+                // this.parentNode.parentNode is the quote editing window
+                updateQuoteArticle(this.parentNode.parentNode.attributes['data-id'].value, response.quote);
+                document.querySelector(".quote-editing .exit").click();
+            } else {
+                showMessage(this, "Failed to update the quote!", false);
+            }
+        })();
     });
 }
 
@@ -112,6 +124,7 @@ function updateQuoteArticle(quoteId, newQuote) {
 
 function parseUpdateFormData(form) {
     let formData = parseFormData(form);
-    formData += "&id=" + form.parentNode.attributes["data-id"].value;
+    // form.parentNode.parentNode is the quote editing window
+    formData.id = form.parentNode.parentNode.attributes["data-id"].value;
     return formData;
 }

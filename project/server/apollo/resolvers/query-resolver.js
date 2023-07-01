@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const Quote = require("../models/Quote");
-const { validateSession } = require("./util/authorization");
+const { decodeJWT } = require("../../controllers/util/authentications");
 
 const queryResolver = {
   Query: {
@@ -30,7 +30,8 @@ const queryResolver = {
     },
     quotes: async (parent, { loggedInUser, username, offset }, context) => {
       if (!loggedInUser) {
-        loggedInUser = validateSession(context.req);
+        const token = context.req.headers.authorization;
+        loggedInUser = decodeJWT(token).username;
       }
       try {
         let quotes;
@@ -46,7 +47,8 @@ const queryResolver = {
     },
     quote: async (parent, { id, loggedInUser }, context) => {
       if (!loggedInUser) {
-        loggedInUser = validateSession(context.req);
+        const token = context.req.headers.authorization;
+        loggedInUser = decodeJWT(token).username;
       }
       try {
         let quote = await Quote.getQuote({ id, loggedInUser });

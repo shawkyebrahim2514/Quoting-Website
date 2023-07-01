@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <%- include('partials/common-head.ejs', {pageTitle: "Profile"})%>
+    <%- include('partials/common-head.ejs', {pageTitle: user.first_name + " " + user.last_name })%>
 </head>
 
 <body>
@@ -18,17 +18,10 @@
         </header>
             <main>
                 <div class="container">
-                    <%- include('partials/messages') %>
                     <% if (authorized) { %>
                         <%- include('partials/quote-form') %>
                     <% } %>
-                    <div class="quote-editing" data-id="null">
-                        <div class="exit">
-                            <i class="fa-solid fa-xmark"></i>
-                        </div>
-                        <%- include('partials/messages') %>
-                        <%- include('partials/quote-form') %>
-                    </div>
+                    <%- include('partials/quote-editing') %>
                     <div class="quotes-container">
                     </div>
                     <a href="#" class="btn load-more">Load more quotes</a>

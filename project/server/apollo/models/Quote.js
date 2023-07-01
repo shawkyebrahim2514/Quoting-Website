@@ -5,11 +5,15 @@ class Quote {
   // It allows a condition to be added to the query
   // It allows an offset to be added to the query
   // It allows an orderBy to be added to the query
-  // It uses the loggedUser to check if the quote is liked by this user
+  // It uses the loggedUser to check if the quote is liked by this user, and return isLiked = 1 if it is liked, otherwise isLiked = 0
+  // The isLogged is used to check if the user is logged in, so he can like the quote
+  // The isOwned is used to check if the quote is owned by the logged in user, so he can delete or update it
   static #getQuoteQuery({
     condition, offset = 0, orderBy = "created_at desc", loggedInUser = null
   }) {
     let query = `select ${loggedInUser ? `exists(select quote_id from QuoteLike where quote_id = q.id and username = '${loggedInUser}')` : 0} as isLiked,
+            ${loggedInUser ? 1 : 0} as isLogged,
+            iif(q.username == '${loggedInUser}', 1, 0) as isOwned,
             q.id,
             title,
             content,
@@ -31,6 +35,7 @@ class Quote {
         Quote.#getQuoteQuery({
           condition: `where q.username = '${username}'`,
           offset: offset,
+          orderBy: "created_at desc",
           loggedInUser: loggedInUser
         }),
         (err, rows) => {
@@ -94,7 +99,7 @@ class Quote {
             reject("Error while creating quote, or invalid data!");
           } else {
             const lastInsertedId = this.lastID;
-            resolve(lastInsertedId);
+            resolve(Quote.getQuote({ id: lastInsertedId, loggedInUser: username }));
           }
         }
       );
@@ -108,8 +113,11 @@ class Quote {
         [quote_id, username],
         (err) => {
           if (err) {
-            reject("Error while liking quote, or invalid data!");
+            reject("Quote is already liked by this user!");
           } else {
+            if (this.changes === 0) {
+              reject("Error while liking quote, or invalid data!");
+            }
             resolve("Quote is liked successfully!");
           }
         }
@@ -164,6 +172,9 @@ class Quote {
           if (err) {
             reject(err);
           } else {
+            if (this.changes === 0) {
+              reject("Quote is not created by this user!");
+            }
             resolve("Quote is updated successfully!");
           }
         }

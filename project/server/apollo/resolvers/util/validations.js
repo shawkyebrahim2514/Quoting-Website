@@ -1,4 +1,4 @@
-function checkUserValidation(user) {
+function checkUserInputValidation(user) {
     let message = "";
     message += checkValidUsername(user.username);
     message += checkValidPassword(user.password);
@@ -56,7 +56,7 @@ function checkValidName(name) {
     }
 }
 
-function checkQuoteValidation(quote) {
+function checkQuoteInputValidation(quote) {
     let title = quote.title;
     let content = quote.content;
     let message = "";
@@ -73,4 +73,4 @@ function checkQuoteValidation(quote) {
     }
 }
 
-module.exports = { checkUserValidation, checkQuoteValidation };
+module.exports = { checkUserInputValidation, checkQuoteInputValidation };

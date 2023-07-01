@@ -8,13 +8,18 @@
                 <span></span><span></span><span></span>
             </div>
             <ul>
+                <!-- Active class used to distinguish the current page the user opens -->
+                <!-- Create the Home -->
                 <a href="/"><li <% if (currentPage === 'home') { %> class="active" <% } %>>Home</li></a>
+                <!-- Create the Login link if the user doesn't log in -->
                 <% if (!authenticated) { %>
                     <a href="/login"><li <% if (currentPage === 'login') { %> class="active" <% } %>>Login</li></a>
                 <% } %>
+                <!-- Create the Register link if the user doesn't log in -->
                 <% if (!authenticated) { %>
                     <a href="/register"><li <% if (currentPage === 'register') { %> class="active" <% } %>>Register</li></a>
                 <% } %>
+                <!-- Create the Profile link if the user logs in -->
                 <% if (authenticated) { %>
                     <a href="/profile/<%= authenticated %>"><li <% if (currentPage === 'profile' && authorized) { %> class="active" <% } %>>Profile</li></a>
                 <% } %>

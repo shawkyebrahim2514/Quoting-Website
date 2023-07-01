@@ -6,12 +6,22 @@ const typeDefs = gql`
     userAuthentication(username: String!, password: String!): UserAuthenticationResponse!
     "Get all users in the database"
     users: [User!]!
-    "Get a user by email"
+    "Get a user by his username"
     user(username: String!): User
     "Get all quotes in the database that belong to a user"
-    quotes(loggedInUser: String, username: String, offset: Int!): [Quote!]!
+    quotes(
+      "Used to check if the quote is liked by this username, if not provided, the logged in username will be taken from the authorization header"
+      loggedInUser: String, 
+      "The username of the user that the quotes belong to, if not provided, all quotes will be returned descendingly by the number of likes"
+      username: String, 
+      "The offset used for pagination"
+      offset: Int!): [Quote!]!
     "Get a quote by id"
-    quote(loggedInUser: String, id: ID!): Quote
+    quote(
+      "Used to check if the quote is liked by this username, if not provided, the logged in username will be taken from the authorization header"
+      loggedInUser: String, 
+      "The id of the quote to get"
+      id: ID!): Quote
   }
 
   type Mutation {
@@ -40,7 +50,11 @@ const typeDefs = gql`
     "The last name of the user"
     last_name: String
     "Get the user's quotes"
-    quotes(loggedInUser: String offset: Int!): [Quote!]!
+    quotes(
+      "Used to check if the quote is liked by this username, if not provided, the logged in username will be taken from the authorization header"
+      loggedInUser: String, 
+      "The offset used for pagination"
+      offset: Int!): [Quote!]!
   }
 
   "Quote type that represents a quote in the database"
@@ -55,15 +69,21 @@ const typeDefs = gql`
     created_at: String!
     "The number of likes of the quote"
     numberOfLikes: Int!
-    "Check if the quote is liked by the logged user"
+    "Determines if the quote is liked by the logged username, so it can be distinguished in the frontend"
     isLiked: Boolean!
+    "Determines if the user is logged in, so he can like or dislike the quote"
+    isLogged: Boolean!
+    "Determines if the quote is owned by the logged username (has the authority), so he can delete or update the quote"
+    isOwned: Boolean!
     "The author of the quote"
     author: User!
   }
 
   "Response type for authentication, it will return a success (false or true) and message"
   type UserAuthenticationResponse {
+    "Determines if the authentication was successful"
     success: Boolean!
+    "Message of the authentication"
     message: String!
   }
 
@@ -83,7 +103,7 @@ const typeDefs = gql`
 
   "Payload type for creating a new user, it will return a success (false or true) and message"
   type CreateUserPayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String
@@ -97,9 +117,9 @@ const typeDefs = gql`
     content: String!
   }
 
-  "Payload type for creating a new quote, it will return a success (false or true) and message"
+  "Payload type for creating a new quote, it will return a success (false or true), message and the new created quote if the mutation was successful"
   type CreateQuotePayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String!
@@ -109,7 +129,7 @@ const typeDefs = gql`
 
   "Payload type for liking a quote, it will return a success (false or true) and message"
   type LikeQuotePayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String
@@ -117,7 +137,7 @@ const typeDefs = gql`
 
   "Payload type for disliking a quote, it will return a success (false or true) and message"
   type DislikeQuotePayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String
@@ -125,7 +145,7 @@ const typeDefs = gql`
 
   "Payload type for deleting a quote, it will return a success (false or true) and message"
   type DeleteQuotePayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String
@@ -141,9 +161,9 @@ const typeDefs = gql`
     content: String!
   }
 
-  "Payload type for updating a quote, it will return a success (false or true) and message"
+  "Payload type for updating a quote, it will return a success (false or true), message and the updated quote if the mutation was successful"
   type UpdateQuotePayload {
-    "Success of the mutation"
+    "Determines if the mutation was successful"
     success: Boolean!
     "Message of the mutation"
     message: String!

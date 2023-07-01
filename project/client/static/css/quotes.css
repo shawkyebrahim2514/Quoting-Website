@@ -119,7 +119,7 @@
     border-bottom: 1px solid white;
 }
 
-.quote-editing{
+.quote-editing {
     position: fixed;
     top: 0;
     left: 0;
@@ -132,10 +132,18 @@
     backdrop-filter: blur(5px);
     z-index: 100;
     flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
 }
 
-.quote-editing.show{
+.quote-editing .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.quote-editing.show {
     display: flex;
 }
 

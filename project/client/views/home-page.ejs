@@ -15,16 +15,10 @@
         </header>
             <main>
                 <div class="container">
-                    <%- include('partials/messages') %>
                     <% if (authenticated) { %>
                         <%- include('partials/quote-form') %>
                     <% } %>
-                    <div class="quote-editing" data-id="null">
-                        <div class="exit">
-                            <i class="fa-solid fa-xmark"></i>
-                        </div>
-                        <%- include('partials/quote-form') %>
-                    </div>
+                    <%- include('partials/quote-editing') %>
                     <div class="quotes-container">
                     </div>
                     <a href="#" class="btn load-more">Load more quotes</a>

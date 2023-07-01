@@ -1,12 +1,12 @@
 const User = require("../models/User");
 const Quote = require("../models/Quote");
-const { validateSession } = require("./util/authorization");
-const { checkUserValidation, checkQuoteValidation } = require("./util/validations");
+const { checkUserInputValidation, checkQuoteInputValidation } = require("./util/validations");
+const { decodeJWT } = require("../../controllers/util/authentications");
 
 const mutationResolver = {
     Mutation: {
         createUser: async (_, { input }, context) => {
-            let userValidation = checkUserValidation(input);
+            let userValidation = checkUserInputValidation(input);
             if (!userValidation.valid) {
                 return { success: false, message: userValidation.message };
             }
@@ -18,24 +18,31 @@ const mutationResolver = {
             }
         },
         createQuote: async (_, { input }, context) => {
-            const username = validateSession(context.req);
+            const token = context.req.headers.authorization;
+            if(!token) {
+                return { success: false, message: "Authorization token required!", quote: null };
+            }
+            const username = decodeJWT(token).username;
             if (!username) {
                 return { success: false, message: "Unauthorized operation!", quote: null };
             }
-            let quoteValidation = checkQuoteValidation(input);
+            let quoteValidation = checkQuoteInputValidation(input);
             if (!quoteValidation.valid) {
                 return { success: false, message: quoteValidation.message, quote: null };
             }
             try {
-                let lastInsertedId = await Quote.createQuote({ quoteData: input, username });
-                let quote = await Quote.getQuote({ id: lastInsertedId, loggedInUser: username });
-                return { success: true, message: "Successfully created!", quote: quote };
+                let newCreatedQuote = await Quote.createQuote({ quoteData: input, username });
+                return { success: true, message: "Successfully created!", quote: newCreatedQuote };
             } catch (error) {
                 return { success: false, message: error, quote: null };
             }
         },
         likeQuote: async (_, { quote_id }, context) => {
-            const username = validateSession(context.req);
+            const token = context.req.headers.authorization;
+            if(!token) {
+                return { success: false, message: "Authorization token required!", quote: null };
+            }
+            const username = decodeJWT(token).username;
             if (!username) {
                 return { success: false, message: "Unauthorized operation!" };
             }
@@ -47,7 +54,11 @@ const mutationResolver = {
             }
         },
         dislikeQuote: async (_, { quote_id }, context) => {
-            const username = validateSession(context.req);
+            const token = context.req.headers.authorization;
+            if(!token) {
+                return { success: false, message: "Authorization token required!", quote: null };
+            }
+            const username = decodeJWT(token).username;
             if (!username) {
                 return { success: false, message: "Unauthorized operation!" };
             }
@@ -59,7 +70,11 @@ const mutationResolver = {
             }
         },
         deleteQuote: async (_, { quote_id }, context) => {
-            const username = validateSession(context.req);
+            const token = context.req.headers.authorization;
+            if(!token) {
+                return { success: false, message: "Authorization token required!", quote: null };
+            }
+            const username = decodeJWT(token).username;
             if (!username) {
                 return { success: false, message: "Unauthorized operation!" };
             }
@@ -71,7 +86,11 @@ const mutationResolver = {
             }
         },
         updateQuote: async (_, { input }, context) => {
-            const username = validateSession(context.req);
+            const token = context.req.headers.authorization;
+            if(!token) {
+                return { success: false, message: "Authorization token required!", quote: null };
+            }
+            const username = decodeJWT(token).username;
             if (!username) {
                 return { success: false, message: "Unauthorized operation!", quote: null };
             }

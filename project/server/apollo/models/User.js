@@ -1,5 +1,6 @@
 const connection = require("./databaseConnection");
-const bcrypt = require("bcryptjs");
+const { checkValidPassword, hashUserPassword } = require("./util");
+
 class User {
   static async checkUserAuthentication(username, password) {
     return await new Promise((resolve, reject) => {
@@ -16,7 +17,7 @@ class User {
               if (isPasswordValid) {
                 resolve("User authenticated successfully!");
               } else {
-                reject("password isn't correct!");
+                reject("Password isn't correct!");
               }
             }
           }
@@ -73,14 +74,5 @@ class User {
     });
   }
 };
-
-function checkValidPassword(password, hashedPassword) {
-  return bcrypt.compareSync(password, hashedPassword);
-}
-
-function hashUserPassword(user) {
-  const salt = bcrypt.genSaltSync(10);
-  user.password = bcrypt.hashSync(user.password, salt);
-}
 
 module.exports = User;

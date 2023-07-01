@@ -1,27 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const QuoteModel = require("../models/Quote.js");
-const UserModel = require("../models/User.js");
-const { formQuotesResponse } = require("./util/quote-util.js");
+const User = require("./graphql/User");
+const { decodeJWT } = require("./util/authentications");
 
-router.get("/:username", async (req, res) => {
-    let user = await UserModel.getUserName(req.params.username);
-    let authorized = checkProfileAuthorization(req);
-    res.render("profile", { authorized, user: user, authenticated: req.session.user });
+router.get("/:username", (req, res) => {
+    (async () => {
+        const decodedToken = decodeJWT(req.headers.authorization);
+        let user = await User.getUserName(req.params.username);
+        if (!user) {
+            return res.render("404", { authenticated: decodedToken.username });
+        }
+        let authorized = checkProfileAuthorization(req, decodedToken);
+        res.render("profile", { authorized, user: user, authenticated: decodedToken.username });
+    })();
 });
 
-function checkProfileAuthorization(req) {
-    return req.session.user && req.session.user.username === req.params.username ? req.session.user.username : null;
+function checkProfileAuthorization(req, decodedToken) {
+    return decodedToken && decodedToken.username === req.params.username ? req.params.username : null;
 }
-
-router.post("/:username/get-quotes", async (req, res) => {
-    let offset = req.body.offset;
-    let response = await QuoteModel.getQuotes({ offset, username: req.params.username, sessionId: req.sessionID });
-    if (response) {
-        response = formQuotesResponse(response,
-            req.session.user ? req.session.user.username : null);
-    }
-    return res.json(response);
-});
 
 module.exports = { profileController: router };
