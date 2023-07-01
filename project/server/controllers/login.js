@@ -14,7 +14,7 @@ router.post("/", (req, res) => {
             const response = await User.checkUserAuthentication(user);
             if (response.success) {
                 const token = createJWTToken(user);
-                res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+                res.cookie('token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, encode: String });
                 res.json({ success: true, message: 'Login successful', token });
             } else {
                 res.status(401).json({ success: false, message: 'Invalid credentials' });

@@ -14,7 +14,7 @@ router.post("/", (req, res) => {
             let response = await User.createUser(user);
             if (response.success) {
                 const token = createJWTToken(user);
-                res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+                res.cookie('token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, encode: String });
                 res.json({ success: true, message: 'Registration successful' });
             } else {
                 res.status(401).json({ success: false, message: 'User Exists before!' });

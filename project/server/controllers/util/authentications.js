@@ -33,8 +33,8 @@ function createJWTToken(user) {
 
 function decodeJWT(authHeader) {
     if (!authHeader) return false;
-    const token = authHeader;
-    if (token) {
+    const [scheme, token] = authHeader.split(' ');
+    if (scheme === 'Bearer' && token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             return decoded;
