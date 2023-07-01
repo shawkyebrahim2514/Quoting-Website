@@ -10,6 +10,8 @@ async function runApolloServer(app) {
       req: req,
     }),
     introspection: true,
+    cache: "bounded",
+    persistedQueries: false
   });
   await server.start();
   server.applyMiddleware({ app, path: "/graphql" });
