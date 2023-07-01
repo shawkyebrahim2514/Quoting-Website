@@ -13,9 +13,7 @@ router.post("/", (req, res) => {
             const user = parseLoginRequestBody(req);
             const response = await User.checkUserAuthentication(user);
             if (response.success) {
-                console.log("Credintails successful");
                 const token = createJWTToken(user);
-                console.log("Token created");
                 res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
                 res.json({ success: true, message: 'Login successful', token });
             } else {
