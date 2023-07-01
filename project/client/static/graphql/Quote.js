@@ -53,7 +53,6 @@ class Quote {
             username: username
         };
         const response = await graphQLRequest({ query, variables });
-        console.log(response);
         return response.data.quotes;
     }
 
@@ -116,7 +115,6 @@ class Quote {
             input: quoteData,
         };
         const response = await graphQLRequest({ query, variables });
-        console.log("Updated response: ", response);
         return response.data.updateQuote;
     }
 }

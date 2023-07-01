@@ -21,11 +21,10 @@ A web application that allows users to share, view quotes, and like quotes!
 
 ## Features
 
-- User registration and authentication
-- Create, edit, and delete quotes
-- View a list of quotes with their titles and content
-- Search quotes by keyword or author
-- User-friendly interface with responsive design
+- User registration and authentication using JSON Web Tokens (JWT) for secure authentication and authorization.
+- Create, edit, and delete quotes to share your thoughts and ideas.
+- View a list of quotes with their titles and content to explore the quotes shared by others.
+- User-friendly interface with a responsive design for a seamless browsing experience across different devices.
 
 ## Getting Started
 
@@ -82,17 +81,18 @@ To get started with the API, follow these steps:
 2. Clone the project repository from GitHub.
 3. Install the project dependencies by running `npm install` in the project root directory.
 4. Create a `.env` file in the project root directory and provide the necessary environment variables (e.g., database connection details, API keys, etc.).
-5. Start the server by running `npm start` in the project root directory.
-6. The GraphQL API will be available at http://localhost:4000/graphql.
+5. Start the server by running `npm start` in the project root directory, or use the nodemon by running `npm run nodemon`.
+6. The GraphQL API will be available at http://localhost:4000/graphql/.
 
 ### Exploring the API
 
-- You can explore and interact with the API using tools like Apollo Explorer or GraphQL Playground. Open the API endpoint (http://localhost:4000/graphql) in your browser or preferred API client.
+- You can explore and interact with the API using tools like Apollo Explorer or GraphQL Playground. Open the API endpoint (http://localhost:4000/graphql/) in your browser or preferred API client.
 - The API documentation provides details on the available queries, mutations, and their input/output formats. It also includes examples of how to use the API to perform common tasks, such as creating a new quote or retrieving a list of quotes.
 
-### Authentication
+### Authorization
 
-- Some API operations may require authentication. In such cases, you need to include an authorization header in your requests. Refer to the API documentation for specific authentication requirements for each operation.
+- Some API operations may require authorization, you don't need to provide an access token for these operations as the server side take this token from the cookies of the user.
+- You need to provide a valid access token in the Authorization header of the request if you use the GraphQL Playground, or in the HTTP headers if you use the Apollo Explorer.
 
 ### Error Handling
 
@@ -110,3 +110,4 @@ The Quoting Website is built using the following technologies:
 - SQLite - SQL database for storing quotes and user data
 - Apollo Server - GraphQL server implementation
 - HTML/CSS - Markup language and stylesheets for web design
+- JSON Web Tokens (JWT) - A secure and compact way to transmit information between parties as a JSON object.

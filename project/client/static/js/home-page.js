@@ -13,8 +13,6 @@ window.addEventListener('load', () => {
     hideOverlay();
 });
 
-console.log(document.location.pathname.split("/"));
-
 let quotes = getQuotes(document.location.pathname.split("/").at(-1));
 
 function addLoadMoreEvent() {

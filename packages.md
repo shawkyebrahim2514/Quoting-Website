@@ -3,13 +3,6 @@
 > This is a list of packages used in this project.
 
 ```bash
-    npm install @apollo/client
-```
-
-* This package provides a comprehensive JavaScript GraphQL client for querying and mutating data on a GraphQL server.
-* It enables you to interact with your GraphQL API and manage local application state.
-
-```bash
     npm install apollo-server-express
 ```
 
@@ -59,13 +52,6 @@
 * It provides a robust set of features for building web applications, such as routing, middleware, and template engines.
 
 ```bash
-    npm install express-session
-```
-
-* This package is a middleware that enables session management in Express applications.
-* It provides a simple way to store session data on the server and associate it with client requests.
-
-```bash
     npm install graphql
 ```
 
@@ -99,3 +85,12 @@
 
 * This package is a development tool that monitors changes in your Node.js application and automatically restarts the server.
 * It helps streamline the development process by eliminating the need to manually restart the server on every change.
+
+```bash
+    npm install jsonwebtoken
+```
+
+* The jsonwebtoken package is a widely used library for generating and verifying JSON Web Tokens (JWTs) in Node.js.
+* JSON Web Tokens are a compact and self-contained way to securely transmit information between parties as a JSON object.
+* This package provides functions for creating JWTs, verifying their validity, and decoding their contents.
+* It is commonly used for authentication and authorization in web applications, where tokens are issued to authenticated users and used to grant access to protected resources.
