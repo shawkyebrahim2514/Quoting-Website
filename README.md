@@ -1,6 +1,6 @@
 # Quoting-Website
 
-A web application that allows users to share, view quotes, and like quotes!
+A web application that allows users to share their favorite quotes, search for existing quotes, and like or dislike quotes!
 
 ## Table of Contents
 
@@ -16,15 +16,17 @@ A web application that allows users to share, view quotes, and like quotes!
 ## Project Overview
 
 - Quoting Website is a platform where everyone can share their favorite quotes.
-- Users can create an account, submit quotes, and browse through quotes shared by other users.
+- Users can create an account, submit quotes, and browse through quotes shared by other users by searching using the search bar or in the feed.
 - It provides an interactive and engaging experience for everyone to discover and share their favorite quotes.
 
 ## Features
 
 - User registration and authentication using JSON Web Tokens (JWT) for secure authentication and authorization.
-- Create, edit, and delete quotes to share your thoughts and ideas.
+- Users can create, search, edit, or delete quotes!
+- Search bar where users can search for quotes that contain any word.
 - View a list of quotes with their titles and content to explore the quotes shared by others.
-- User-friendly interface with a responsive design for a seamless browsing experience across different devices.
+- A profile page for each user shows his information and his shared quotes.
+- A user-friendly interface with a responsive design for a seamless browsing experience across different devices.
 
 ## Getting Started
 
@@ -52,17 +54,25 @@ To run this project locally, you need to have the following prerequisites instal
 
 3. Create the Environment file
     - Create a `.env` file on the root folder `project`
-    - Add the same information from `.env.example` file into this created `.env` file
+    - Add the same data from this `.env.example` file into this created `.env` file
 
 ## Usage
 
 1. Start the development server:
 
    ```bash
-   npm start
+     npm start
    ```
 
     - This will start the server and make the application available at <http://localhost:4000>.
+  
+  or
+
+    ```bash
+      npm run nodemon
+    ```
+
+    - This will start the server using the nodemon package.
 
 2. Open your web browser and navigate to <http://localhost:4000> to access the Quoting Website.
 
@@ -107,7 +117,8 @@ The Quoting Website is built using the following technologies:
 - Node.js - JavaScript runtime environment
 - Express - Fast and minimalist web framework for Node.js
 - GraphQL - Query language and runtime for APIs
-- SQLite - SQL database for storing quotes and user data
+- MongoDB - NoSQL database for storing quotes and user data
+    - MongoDB Atlas Search: Used in searching for quotes.
 - Apollo Server - GraphQL server implementation
 - HTML/CSS - Markup language and stylesheets for web design
 - JSON Web Tokens (JWT) - A secure and compact way to transmit information between parties as a JSON object.
