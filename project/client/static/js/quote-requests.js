@@ -37,11 +37,23 @@ async function sendUpdateQuoteRequest(formData) {
     return response;
 }
 
+async function sendSearchQuotesRequest(word) {
+    const response = await Quote.searchQuotes(word);
+    return response;
+}
+
+async function getFullQuoteInfo(quoteId) {
+    const response = await Quote.getFullQuoteInfo(quoteId);
+    return response;
+}
+
 export {
     getQuotes,
     sendDeleteQuoteRequest,
     sendLikeQuote,
     sendDislikeQuote,
     sendCreateQuoteRequest,
-    sendUpdateQuoteRequest
+    sendUpdateQuoteRequest,
+    sendSearchQuotesRequest,
+    getFullQuoteInfo,
 };

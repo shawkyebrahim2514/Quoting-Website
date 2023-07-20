@@ -50,16 +50,29 @@ form input[type="reset"] {
     background-color: var(--red-color);
 }
 
+form input[disabled] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
 form textarea {
     resize: vertical;
     min-height: 1em;
     height: auto;
-    overflow: hidden;
 }
 
 .hints {
     padding-left: 20px;
     color: #4c4c4c;
+}
+
+form input.invalid, form textarea.invalid {
+    border-color: var(--red-color);
+    color: var(--red-color);
+}
+
+.hints.invalid, form label.invalid {
+    color: var(--red-color);
 }
 
 .hints .hint {

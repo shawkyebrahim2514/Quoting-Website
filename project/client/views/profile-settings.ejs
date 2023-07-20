@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/common-head.ejs', {pageTitle: "Profile Settings"})%>
+</head>
+<body>
+    <%- include('partials/overlay') %>
+    <%- include('partials/navbar', {authenticated, currentPage: "profile-settings"}) %>
+    <header>
+        <div class="container">
+            Profile <span class="highlight">Settings</span>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <%- include('partials/messages') %>
+            <form action="#" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" value="<%= authenticated.username %>" disabled>
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email" value="<%= authenticated.email %>" disabled>
+                <label for="first-name">First name:</label>
+                <input type="text" name="first_name" id="first-name" value="<%= authenticated.first_name %>" placeholder="Enter here your first name">
+                <div class="hints">
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Name must be between 2 and 20 characters long
+                    </span>
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Name must contain only letters
+                    </span>
+                </div>
+                <label for="last-name">Last name:</label>
+                <input type="text" name="last_name" id="last-name" value="<%= authenticated.last_name %>" placeholder="Enter here your second name">
+                <div class="hints">
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Name must be between 2 and 20 characters long
+                    </span>
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Name must contain only letters
+                    </span>
+                </div>
+                <label for="bio">Bio:</label>
+                <textarea name="bio" id="bio" placeholder="Bio must be with maximum 150 characters"><%= authenticated.bio %></textarea>
+                <label for="old-password">Old password:</label>
+                <input type="password" name="old-password" id="old-password" placeholder="Enter here your password">
+                <div class="hints">
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Keep it empty if you don't want to change your password
+                    </span>
+                </div>
+                <label for="new-password">New password:</label>
+                <input type="password" name="new-password" id="new-password" placeholder="Enter here your password">
+                <div class="hints">
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Password must be between 6 and 20 characters long
+                    </span>
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Password must contain at least one uppercase letter, one lowercase letter and one number
+                    </span>
+                </div>
+                <label for="re-new-password">Re-enter the password:</label>
+                <input type="password" name="re-new-password" id="re-new-password" placeholder="Enter here your password">
+                <div class="hints">
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Password must be between 6 and 20 characters long
+                    </span>
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Password must contain at least one uppercase letter, one lowercase letter and one number
+                    </span>
+                </div>
+                <div class="buttons">
+                    <input type="reset" name="reset" id="reset" value="RESET"/>
+                    <input type="submit" name="submit" id="submit" value="SUBMIT"/>
+                </div>
+            </form>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="/js/profile-settings.js" type="module"></script>
+</body>
+</html>

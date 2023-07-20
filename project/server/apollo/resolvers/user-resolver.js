@@ -1,4 +1,5 @@
 const Quote = require("../models/Quote");
+
 const userResolver = {
   User: {
     quotes: async ({ username }, { offset, loggedInUser }, context) => {
@@ -11,4 +12,5 @@ const userResolver = {
     },
   },
 };
+
 module.exports = userResolver;

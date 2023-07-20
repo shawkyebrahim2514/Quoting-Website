@@ -6,7 +6,7 @@ class Quote {
                         createQuote(input: $input) {
                             success
                             quote {
-                                id
+                                _id
                                 title
                                 content
                                 created_at
@@ -33,7 +33,7 @@ class Quote {
         // It will check if the user logged through the session of the user
         let query = `query GetQuotes($offset: Int!, $username: String) {
                         quotes(offset: $offset, username: $username) {
-                            id
+                            _id
                             title
                             content
                             created_at
@@ -57,7 +57,7 @@ class Quote {
     }
 
     static async likeQuote(quoteId) {
-        let query = `mutation($quoteId: Int!) {
+        let query = `mutation($quoteId: String!) {
             likeQuote(quote_id: $quoteId) {
                     success
                     message
@@ -71,7 +71,7 @@ class Quote {
     }
 
     static async dislikeQuote(quoteId) {
-        let query = `mutation($quoteId: Int!) {
+        let query = `mutation($quoteId: String!) {
                         dislikeQuote(quote_id: $quoteId) {
                             success
                             message
@@ -85,7 +85,7 @@ class Quote {
     }
 
     static async deleteQuote(quoteId) {
-        let query = `mutation($quoteId: Int!) {
+        let query = `mutation($quoteId: String!) {
             deleteQuote(quote_id: $quoteId) {
                     success
                     message
@@ -102,13 +102,7 @@ class Quote {
         let query = `mutation($input: UpdateQuoteInput!) {
             updateQuote(input: $input) {
                     success
-                    quote {
-                        title
-                        content
-                        isLiked
-                        isLogged
-                        isOwned
-                    }
+                    message
                 }
             }`
         let variables = {
@@ -116,6 +110,47 @@ class Quote {
         };
         const response = await graphQLRequest({ query, variables });
         return response.data.updateQuote;
+    }
+
+    static async searchQuotes(word) {
+        let query = `query($word: String!) {
+            quotesSearch(word: $word) {
+                    _id
+                    title
+                    content
+                }
+            }`
+        let variables = {
+            word: word,
+        };
+        const response = await graphQLRequest({ query, variables });
+        return response.data.quotesSearch;
+    }
+
+    static async getFullQuoteInfo(quoteId) {
+        let query = `query($quoteId: String!) {
+            quote(id: $quoteId) {
+                    _id
+                    title
+                    content
+                    created_at
+                    numberOfLikes
+                    isLiked
+                    isLogged
+                    isOwned
+                    author {
+                        username
+                        first_name
+                        last_name
+                        bio
+                    }
+                }
+            }`
+        let variables = {
+            quoteId: quoteId,
+        };
+        const response = await graphQLRequest({ query, variables });
+        return response.data.quote;
     }
 }
 

@@ -43,6 +43,20 @@ class User {
         const response = await graphQLRequest({ query, variables });
         return response.data.user;
     }
+
+    static async updateUser(userData) {
+        let query = `mutation UpdateUser($input: UpdateUserInput!) {
+                        updateUser(input: $input) {
+                            success
+                            message
+                        }
+                    }`
+        let variables = {
+            input: userData,
+        };
+        const response = await graphQLRequest({ query, variables });
+        return response.data.updateUser;
+    }
 }
 
 export default User;

@@ -5,6 +5,7 @@ function checkUserInputValidation(user) {
     message += checkValidEmail(user.email);
     message += checkValidName(user.first_name);
     message += checkValidName(user.last_name);
+    message += checkValidBio(user.bio);
     if(message === "") {
         return {valid: true, message: "Valid user"};
     } else {
@@ -13,13 +14,13 @@ function checkUserInputValidation(user) {
 }
 
 function checkValidUsername(username) {
-    // Username must be between 5 and 20 characters long
+    // Username must be between 1 and 20 characters long
     // Username must contain only letters and numbers
-    let usernameRegex = /^[a-zA-Z0-9]{5,20}$/;
+    let usernameRegex = /^[a-zA-Z0-9]{1,20}$/;
     if (usernameRegex.test(username)) {
         return '';
     } else {
-        return 'Username must be between 5 and 20 characters long and contain only letters and numbers\n';
+        return 'Username must be between 1 and 20 characters long and contain only letters and numbers\n';
     }
 }
 
@@ -37,7 +38,10 @@ function checkValidPassword(password) {
 
 function checkValidEmail(email) {
     // Email must be valid
-    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(email.length > 50) {
+        return 'Email must be less than 50 characters long\n';
+    }
+    let emailRegex = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
     if (emailRegex.test(email)) {
         return '';
     } else {
@@ -56,15 +60,25 @@ function checkValidName(name) {
     }
 }
 
+function checkValidBio(bio) {
+    // Bio must with max 150 characters
+    let bioRegex = /^.{0,150}$/s;
+    if(bioRegex.test(bio)) {
+        return '';
+    } else {
+        return 'Bio must with max 150 characters\n';
+    }
+}
+
 function checkQuoteInputValidation(quote) {
     let title = quote.title;
     let content = quote.content;
     let message = "";
-    if (title.length < 3 || title.length > 255) {
-        message += 'Title must be between 3 and 255 characters long\n';
+    if (title.length < 3 || title.length > 50) {
+        message += 'Title must be between 3 and 50 characters long\n';
     }
-    if (content.length < 10 || content.length > 1000) {
-        message += 'Content must be between 10 and 1000 characters long\n';
+    if (content.length < 10 || content.length > 400) {
+        message += 'Content must be between 10 and 400 characters long\n';
     }
     if(message === "") {
         return {valid: true, message: "Valid quote"};

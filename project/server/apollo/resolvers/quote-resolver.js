@@ -1,4 +1,5 @@
 const User = require("../models/User");
+
 const quoteResolver = {
   Quote: {
     author: async ({ username }, args, context) => {
@@ -11,4 +12,5 @@ const quoteResolver = {
     },
   },
 };
+
 module.exports = quoteResolver;

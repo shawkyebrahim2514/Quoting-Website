@@ -1,6 +1,6 @@
 import { hideOverlay, addToggleNavbarLinks } from "./main.js";
 import { sendLoginRequest } from "./user-requests.js";
-import { checkValidLoginInputs } from "./form-validations.js";
+import { checkValidLoginInputs, checkValidationFieldsResult } from "./form-validations.js";
 import { showMessage } from "./messages.js";
 
 window.addEventListener('load', () => {
@@ -13,8 +13,11 @@ function addFormSubmitEvent() {
     document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
         (async () => {
-            if(!checkValidLoginInputs(this)) {
+            let fields = checkValidLoginInputs(this);
+            let isValidFields = checkValidationFieldsResult(this, fields);
+            if (!isValidFields) {
                 showMessage(this, "Invalid inputs", false);
+                window.scrollTo(0, 0);
                 return;
             }
             let response = await sendLoginRequest(this);
@@ -22,6 +25,7 @@ function addFormSubmitEvent() {
                 window.location.href = "./";
             } else {
                 showMessage(this, response.message, false);
+                window.scrollTo(0, 0);
             }
         })();
     });

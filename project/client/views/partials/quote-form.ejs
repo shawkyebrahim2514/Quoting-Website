@@ -1,9 +1,9 @@
 <%- include('./messages') %>
-<form action="#" method="POST">
+<form action="#" method="POST" class="quote-creation">
     <label for="title">Title:</label>
-    <input type="text" name="title" id="title" placeholder="Title of at most 255 characters">
+    <input type="text" name="title" id="title" placeholder="Title must be between 3 to 50 characters.">
     <label for="content">Content:</label>
-    <textarea name="content" id="content" placeholder="Content of at most 1000 characters"></textarea>
+    <textarea name="content" id="content" placeholder="Content must be between 10 to 400 characters."></textarea>
     <div class="buttons">
         <input type="reset" name="reset" id="reset" value="RESET" />
         <input type="submit" name="submit" id="submit" value="SUBMIT" />

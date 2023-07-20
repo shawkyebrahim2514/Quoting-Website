@@ -2,30 +2,34 @@
 <html lang="en">
 
 <head>
-    <%- include('partials/common-head.ejs', {pageTitle: "Quoting Home"})%>
+    <%- include('partials/common-head.ejs', {pageTitle: "Quoting Home" })%>
+    <link rel="stylesheet" href="/css/quote-search-bar.css">
 </head>
 
 <body>
     <%- include('partials/overlay') %>
-    <%- include('partials/navbar', {authenticated, currentPage: "home"}) %>
-        <header>
-            <div class="container">
-                Start <span class="highlight">Quoting</span> Now!
+    <%- include('partials/navbar', {authenticated, currentPage: "home" }) %>
+    <header>
+        <div class="container">
+            Start <span class="highlight">Quoting</span> Now!
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <%- include('partials/quote-searching-info-popup') %>
+            <%- include('partials/quote-searching') %>
+            <% if (authenticated.username) { %>
+                <%- include('partials/quote-form') %>
+            <% } %>
+            <%- include('partials/quote-editing') %>
+            <div class="main-quotes quotes-container">
             </div>
-        </header>
-            <main>
-                <div class="container">
-                    <% if (authenticated) { %>
-                        <%- include('partials/quote-form') %>
-                    <% } %>
-                    <%- include('partials/quote-editing') %>
-                    <div class="quotes-container">
-                    </div>
-                    <a href="#" class="btn load-more">Load more quotes</a>
-                </div>
-            </main>
-            <%- include('partials/footer') %>
-            <script src="js/home-page.js" type="module"></script>
+            <a href="#" class="btn load-more">Load more quotes</a>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="js/home-page.js" type="module"></script>
+    <script src="js/quote-searching.js" type="module"></script>
 </body>
 
 </html>

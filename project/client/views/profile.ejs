@@ -3,33 +3,40 @@
 
 <head>
     <%- include('partials/common-head.ejs', {pageTitle: user.first_name + " " + user.last_name })%>
+    <link rel="stylesheet" href="/css/profile.css">
 </head>
 
 <body>
     <%- include('partials/overlay') %>
-    <%- include('partials/navbar', {authenticated, authorized, currentPage: "profile"}) %>
-        <header>
-            <div class="container">
-                <% if (authorized) { %>Welcome <% } %>
-                        <%= user.first_name %>
-                            <%= user.last_name %><% if (authorized) { %>, <span class="logout">Logout</span>
-                                    <% } %>
+    <%- include('partials/navbar', {authenticated, isAuthorized, currentPage: "profile"}) %>
+    <header>
+        <div class="container">
+            <section class="name">
+                <% if (isAuthorized) { %>Welcome <% } %>
+                    <%= user.first_name %>
+                    <%= user.last_name %><% if (isAuthorized) { %>, <span class="logout">Logout</span>
+                <% } %>
+            </section>
+            <section class="info">
+                <a href="/profile/<%= user.username %>" class="profile-link">@<%= user.username %></a>
+                <div class="bio"><%- user.bio %></div>
+            </section>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <% if (isAuthorized) { %>
+                <%- include('partials/quote-form') %>
+            <% } %>
+            <%- include('partials/quote-editing') %>
+            <div class="main-quotes quotes-container">
             </div>
-        </header>
-            <main>
-                <div class="container">
-                    <% if (authorized) { %>
-                        <%- include('partials/quote-form') %>
-                    <% } %>
-                    <%- include('partials/quote-editing') %>
-                    <div class="quotes-container">
-                    </div>
-                    <a href="#" class="btn load-more">Load more quotes</a>
-                </div>
-            </main>
-            <%- include('partials/footer') %>
-            <script src="/js/home-page.js" type="module"></script>
-            <script src="/js/profile.js" type="module"></script>
+            <a href="#" class="btn load-more">Load more quotes</a>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+    <script src="/js/home-page.js" type="module"></script>
+    <script src="/js/profile.js" type="module"></script>
 </body>
 
 </html>

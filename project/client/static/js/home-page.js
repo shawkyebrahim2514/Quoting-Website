@@ -1,7 +1,7 @@
 import { createQuoteElement } from "./quote-creation.js";
 import { hideOverlay, addToggleNavbarLinks } from "./main.js";
 import { getQuotes, sendCreateQuoteRequest, sendUpdateQuoteRequest } from "./quote-requests.js";
-import { checkValidQuoteFormInputs } from "./form-validations.js";
+import { checkValidQuoteFormInputs, checkValidationFieldsResult } from "./form-validations.js";
 import { showMessage } from "./messages.js";
 
 window.addEventListener('load', () => {
@@ -24,7 +24,7 @@ function addLoadMoreEvent() {
                 removeLoadMoreButton();
                 return;
             }
-            let quotesContainer = document.querySelector(".quotes-container");
+            let quotesContainer = document.querySelector(".main-quotes.quotes-container");
             quotesData.value.forEach(quote => {
                 let quoteElement = createQuoteElement(quote);
                 quotesContainer.appendChild(quoteElement);
@@ -39,14 +39,15 @@ function removeLoadMoreButton() {
 }
 
 function addFormSubmitEvent() {
-    let form = document.querySelector("form");
+let form = document.querySelector("form.quote-creation");
     if (form) {
         form.addEventListener("submit", function (event) {
             event.preventDefault();
             (async () => {
-                let isValidFormData = checkValidQuoteFormInputs(this);
-                if (!isValidFormData) {
-                    showMessage(this, "Inputs are invalid!", false);
+                let fields = checkValidQuoteFormInputs(this);
+                let isValidFields = checkValidationFieldsResult(this, fields);
+                if (!isValidFields) {
+                    showMessage(this, "Invalid inputs", false);
                     return;
                 }
                 let formData = parseFormData(this);
@@ -103,10 +104,10 @@ function addQuoteEditingSubmitEvent() {
             let response = await sendUpdateQuoteRequest(formData);
             if (response.success) {
                 // this.parentNode.parentNode is the quote editing window
-                updateQuoteArticle(this.parentNode.parentNode.attributes['data-id'].value, response.quote);
+                updateQuoteArticle(this.parentNode.parentNode.attributes['data-id'].value, parseFormData(this));
                 document.querySelector(".quote-editing .exit").click();
             } else {
-                showMessage(this, "Failed to update the quote!", false);
+                showMessage(this, response.message, false);
             }
         })();
     });

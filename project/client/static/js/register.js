@@ -1,6 +1,6 @@
 import { hideOverlay, addToggleNavbarLinks } from "./main.js";
 import { sendRegisterationRequest } from "./user-requests.js";
-import { checkValidRegistrationInputs } from "./form-validations.js";
+import { checkValidRegistrationInputs, checkValidationFieldsResult } from "./form-validations.js";
 import { showMessage } from "./messages.js";
 
 window.addEventListener('load', () => {
@@ -13,20 +13,20 @@ function addFormSubmitEvent() {
     document.querySelector("form").addEventListener("submit", function (event) {
         event.preventDefault();
         (async () => {
-            if (!checkValidRegistrationInputs(this)) {
+            let fields = checkValidRegistrationInputs(this);
+            fields["confirm-password"] = checkMatchedPasswords(this);
+            let isValidFields = checkValidationFieldsResult(this, fields);
+            if (!isValidFields) {
                 showMessage(this, "Invalid inputs", false);
                 window.scrollTo(0, 0);
                 return;
             }
-            if (checkMatchedPasswords(this)) {
-                let response = await sendRegisterationRequest(this);
-                if (response.success) {
-                    window.location.href = "./";
-                } else {
-                    showMessage(this, response.message, false);
-                }
+            let response = await sendRegisterationRequest(this);
+            if (response.success) {
+                window.location.href = "./";
             } else {
-                showMessage(this, "Passwords do not match", false);
+                showMessage(this, response.message, false);
+                window.scrollTo(0, 0);
             }
         })();
     });

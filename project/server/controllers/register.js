@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const User = require("./graphql/User");
-const { checkUserUnloggedIn, createJWTToken } = require("./util/authentications.js");
+const { checkUserUnloggedIn, createJWTTokenInCookie } = require("./util/authentications.js");
 
+// User who want to visit this page must be logged out
 router.get("/", checkUserUnloggedIn, (req, res) => {
+    // There isn't any authenticated object because the user who can visit this page is not logged in
     res.render("register");
 });
 
@@ -11,10 +13,10 @@ router.post("/", (req, res) => {
     (async () => {
         try {
             let user = parseRegisterRequestBody(req);
+            // Send this request to the GraphQL server
             let response = await User.createUser(user);
             if (response.success) {
-                const token = createJWTToken(user);
-                res.cookie('token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, encode: String });
+                createJWTTokenInCookie(user, res);
                 res.json({ success: true, message: 'Registration successful' });
             } else {
                 res.status(401).json({ success: false, message: 'User Exists before!' });

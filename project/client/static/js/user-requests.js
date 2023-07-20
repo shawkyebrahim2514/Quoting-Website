@@ -1,3 +1,5 @@
+import User from "../graphql/User.js";
+
 async function sendRegisterationRequest(form) {
     let formData = new FormData(form);
     let serializedData = new URLSearchParams(formData).toString();
@@ -37,4 +39,14 @@ async function sendLogoutRequest() {
     return response;
 }
 
-export { sendRegisterationRequest, sendLoginRequest, sendLogoutRequest }
+async function sendUpdatingRequest(formData) {
+    const response = await User.updateUser(formData);
+    return response;
+}
+
+export { 
+    sendRegisterationRequest, 
+    sendLoginRequest, 
+    sendLogoutRequest,
+    sendUpdatingRequest,
+}

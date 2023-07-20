@@ -1,5 +1,7 @@
-const connection = require("./databaseConnection");
-const { convertQueriesDate, convertQueryDate } = require("./util");
+const { db } = require("./databaseConnection");
+const { ObjectId } = require('mongodb');
+
+const { organizeQuotes, organizeSearchQuotes } = require("./util");
 class Quote {
   // The common query for getting quotes
   // It allows a condition to be added to the query
@@ -9,176 +11,273 @@ class Quote {
   // The isLogged is used to check if the user is logged in, so he can like the quote
   // The isOwned is used to check if the quote is owned by the logged in user, so he can delete or update it
   static #getQuoteQuery({
-    condition, offset = 0, orderBy = "created_at desc", loggedInUser = null
+    condition = {}, offset = 0, orderBy = { created_at: -1 }, loggedInUser = null
   }) {
-    let query = `select ${loggedInUser ? `exists(select quote_id from QuoteLike where quote_id = q.id and username = '${loggedInUser}')` : 0} as isLiked,
-            ${loggedInUser ? 1 : 0} as isLogged,
-            iif(q.username == '${loggedInUser}', 1, 0) as isOwned,
-            q.id,
-            title,
-            content,
-            q.username,
-            strftime('%s', 'now') - strftime('%s', created_at) AS created_at,
-            count(ql.quote_id) as numberOfLikes
-            from Quote as q
-            left join QuoteLike as ql on ql.quote_id = q.id
-            ${condition}
-            group by q.id
-            order by ${orderBy}
-            limit 6 offset ${offset}`;
+    let query = [
+      { $match: condition },
+      {
+        // Join the quote with the quoteLikes collection
+        // This is used to get the number of likes for each quote
+        $lookup: {
+          from: "quoteLikes",
+          localField: "_id",
+          foreignField: "quote_id",
+          as: "likes"
+        }
+      },
+      {
+        $set: {
+          numberOfLikes: {
+            $size: "$likes"
+          }
+        }
+      },
+      { $sort: orderBy },
+      { $skip: offset },
+      { $limit: 6 },
+      {
+        // Join the quote with the quoteLikes collection
+        // This is used to check if the quote is liked by the logged in user
+        $lookup: {
+          from: "quoteLikes",
+          localField: "_id",
+          foreignField: "quote_id",
+          pipeline: [
+            { $match: { username: loggedInUser } }
+          ],
+          as: "isLiked"
+        }
+      },
+      {
+        $set: {
+          // Get the time difference between the current time and the quote creation time
+          created_at: {
+            $subtract: [new Date(), "$created_at"]
+          },
+          isLiked: {
+            $gt: [{ $size: "$isLiked" }, 0]
+          },
+          isLogged: (loggedInUser ? true : false),
+          isOwned: {
+            $eq: ["$username", loggedInUser]
+          }
+        }
+      },
+      {
+        $project: {
+          // Execlude the likes array from the result of getting the number of likes
+          likes: 0
+        }
+      }
+    ];
     return query;
   }
 
   static async getAllQuotesByUsername({ username, offset, loggedInUser }) {
-    return await new Promise((resolve, reject) => {
-      connection.all(
-        Quote.#getQuoteQuery({
-          condition: `where q.username = '${username}'`,
-          offset: offset,
-          orderBy: "created_at desc",
-          loggedInUser: loggedInUser
-        }),
-        (err, rows) => {
-          if (err) {
-            reject("Error while getting quotes!");
-          } else {
-            convertQueriesDate(rows);
-            resolve(rows);
-          }
-        }
-      );
+    return new Promise((resolve, reject) => {
+      // Order by the quote creation time (Default value)
+      let query = Quote.#getQuoteQuery({
+        condition: { username },
+        offset: offset,
+        loggedInUser: loggedInUser
+      });
+      db.collection("quotes").aggregate(query).toArray()
+        .then(result => {
+          organizeQuotes(result);
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 
   static async getQuote({ id, loggedInUser }) {
-    return await new Promise((resolve, reject) => {
-      connection.all(
-        Quote.#getQuoteQuery({
-          condition: `where q.id = ${id}`,
-          loggedInUser: loggedInUser
-        }),
-        (err, rows) => {
-          if (err) {
-            reject("Error while getting quote!");
-          } else {
-            // the required quote is the first element in the array
-            let quote = rows[0];
-            convertQueryDate(quote);
-            resolve(quote);
-          }
-        }
-      );
+    return new Promise((resolve, reject) => {
+      let query = Quote.#getQuoteQuery({
+        condition: { _id: new ObjectId(id) },
+        loggedInUser: loggedInUser
+      });
+      db.collection("quotes").aggregate(query).toArray()
+        .then(result => {
+          organizeQuotes(result);
+          resolve(result[0]);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 
-  static async getAllQuotes({ offset, loggedInUser }) {
-    return await new Promise((resolve, reject) => {
-      connection.all(Quote.#getQuoteQuery({
-        condition: "",
+  static getAllQuotes({ offset, loggedInUser }) {
+    return new Promise((resolve, reject) => {
+      // All quotes want to be returned so the condition will be the empty object (Default value)
+      let query = Quote.#getQuoteQuery({
         offset: offset,
-        orderBy: "numberOfLikes desc, created_at desc",
+        orderBy: { numberOfLikes: -1, created_at: -1 },
         loggedInUser: loggedInUser
-      }), (err, rows) => {
-        if (err) {
-          reject("Error while getting quotes!");
-        } else {
-          convertQueriesDate(rows);
-          resolve(rows);
-        }
       });
+      db.collection("quotes").aggregate(query).toArray()
+        .then(result => {
+          organizeQuotes(result);
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 
   static async createQuote({ quoteData, username }) {
-    return await new Promise((resolve, reject) => {
-      connection.run(
-        `INSERT INTO Quote (title, content, username) VALUES (?, ?, ?)`,
-        [quoteData.title, quoteData.content, username],
-        function (err) {
-          if (err) {
-            reject("Error while creating quote, or invalid data!");
-          } else {
-            const lastInsertedId = this.lastID;
-            resolve(Quote.getQuote({ id: lastInsertedId, loggedInUser: username }));
-          }
-        }
-      );
+    return new Promise((resolve, reject) => {
+      const quote = {
+        title: quoteData.title,
+        content: quoteData.content,
+        username: username,
+        // We must specify the current date manually because the MongoDB driver doesn't do that automatically
+        created_at: new Date()
+      };
+      db.collection("quotes").insertOne(quote)
+        .then(result => {
+          // This new quote will be with 0 likes so not liked by the logged in user
+          // The user absolutely is logged in because he can create a quote
+          // The user is the owner of this quote because he can create it
+          const newQuote = {
+            ...quote,
+            _id: result.insertedId,
+            numberOfLikes: 0,
+            isLiked: false,
+            isLogged: true,
+            isOwned: true,
+            created_at: 0
+          };
+          organizeQuotes([newQuote]);
+          resolve(newQuote);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 
   static async likeQuote({ quote_id, username }) {
     return await new Promise((resolve, reject) => {
-      connection.run(
-        `insert into QuoteLike (quote_id, username) values (?, ?)`,
-        [quote_id, username],
-        (err) => {
-          if (err) {
-            reject("Quote is already liked by this user!");
-          } else {
-            if (this.changes === 0) {
-              reject("Error while liking quote, or invalid data!");
-            }
-            resolve("Quote is liked successfully!");
-          }
-        }
-      );
+      db.collection("quoteLikes").insertOne({
+        // We must wrap the quote_id with ObjectId because it is a string
+        quote_id: new ObjectId(quote_id),
+        username
+      })
+        .then(result => {
+          resolve("Quote is liked successfully!");
+        })
+        .catch(err => {
+          reject("Quote is already liked by this user or invalid data!");
+        });
     });
   }
 
   static async dislikeQuote({ quote_id, username }) {
     return await new Promise((resolve, reject) => {
-      connection.run(
-        `delete from QuoteLike where quote_id = ? and username = ?`,
-        [quote_id, username],
-        (err) => {
-          if (err) {
-            reject("Error while disliking quote, or invalid data!");
-          } else {
-            if (this.changes === 0) {
-              reject("Quote is not liked by this user!");
-            }
-            resolve("Quote is disliked successfully!");
-          }
-        }
-      );
+      db.collection("quoteLikes").deleteOne({
+        // We must wrap the quote_id with ObjectId because it is a string
+        quote_id: new ObjectId(quote_id),
+        username: username
+      })
+        .then(result => {
+          resolve("Quote is disliked successfully!");
+        })
+        .catch(err => {
+          reject("Quote is not liked by this user or invalid data!");
+        });
     });
   }
 
   static async deleteQuote({ quote_id, username }) {
     return await new Promise((resolve, reject) => {
-      connection.run(
-        `delete from Quote where id = ? and username = ?`,
-        [quote_id, username],
-        (err) => {
-          if (err) {
-            reject("Error while deleting quote, or invalid data!");
-          } else {
-            if (this.changes === 0) {
-              reject("Quote is not created by this user!");
-            }
-            resolve("Quote is deleted successfully!");
+      db.collection("quotes").deleteOne({
+        // We must wrap the quote_id with ObjectId because it is a string
+        _id: new ObjectId(quote_id),
+        username: username
+      })
+        .then(result => {
+          if (result.deletedCount === 0) {
+            reject("Quote is not created by this user or invalid data!");
           }
-        }
-      );
+          // Delegate the deletion of the quote likes to the database
+          db.collection("quoteLikes").deleteMany({ quote_id: new ObjectId(quote_id) });
+          resolve("Quote is deleted successfully!");
+        })
+        .catch(err => {
+          reject("Error while deleting quote, or invalid data!");
+        });
     });
   }
 
   static async updateQuote({ quoteData, username }) {
     return await new Promise((resolve, reject) => {
-      connection.run(
-        `update Quote set title = ?, content = ? where id = ? and username = ?`,
-        [quoteData.title, quoteData.content, quoteData.id, username],
-        function (err) {
-          if (err) {
-            reject(err);
-          } else {
-            if (this.changes === 0) {
-              reject("Quote is not created by this user!");
+      db.collection("quotes").updateOne({
+        // We must wrap the quote_id with ObjectId because it is a string
+        _id: new ObjectId(quoteData.id),
+        username: username
+      }, {
+        $set: {
+          title: quoteData.title,
+          content: quoteData.content
+        }
+      })
+        .then(result => {
+          if(result.matchedCount === 0) {
+            reject("Quote is not created by this user or invalid data!");
+          }
+          if (result.modifiedCount === 0) {
+            reject("Quote is up to date!");
+          }
+          resolve("Quote is updated successfully!");
+        })
+        .catch(err => {
+          reject("Error while updating quote, or invalid data!");
+        });
+    });
+  }
+
+  static searchQuotes(word) {
+    return new Promise((resolve, reject) => {
+      // Make the searching to be on the title and the content of the quote using the autocomplete feature
+      const fields = ["content", "title"];
+      const subQueries = fields.map(field => ({
+        autocomplete: {
+          query: word,
+          path: field
+        }
+      }));
+      let query = [
+        {
+          $search: {
+            index: "QuotingWebsiteSearchIndex",
+            compound: {
+              should: subQueries
             }
-            resolve("Quote is updated successfully!");
+          }
+        },
+        {
+          // Only return the first 4 quotes
+          $limit: 4
+        },
+        {
+          $project: { 
+            // Only return the id, title and content of the quote
+            _id: 1, title: 1, content: 1
           }
         }
-      );
+      ]
+      db.collection("quotes").aggregate(query).toArray()
+        .then(result => {
+          organizeSearchQuotes(result);
+          resolve(result);
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   }
 }

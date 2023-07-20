@@ -30,11 +30,14 @@ class User {
         return response.userAuthentication;
     }
 
-    static async getUserName(username) {
+    static async getUser(username) {
         let query = `query ($username: String!) {
                         user(username: $username) {
-                        first_name
-                        last_name
+                            first_name
+                            last_name
+                            username
+                            email
+                            bio
                         }
                     }`
         let variables = {

@@ -4,6 +4,7 @@ const baseUrl = process.env.NODE_ENV === 'production' ? process.env.HOST_DOMAIN 
 const graphqlUrl = `${baseUrl}/graphql/`;
 
 async function createRequest({ query, variables = {}, sessionId = null }) {
+    // We must attach the JWT token to the request header as the `Authorization` header
     const response = await fetch(graphqlUrl, {
         method: "POST",
         headers: {

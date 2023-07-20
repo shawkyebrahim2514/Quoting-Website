@@ -1,5 +1,3 @@
-/* Style of the quotes */
-
 .quotes-container {
     display: grid;
     margin-bottom: 35px;
@@ -119,48 +117,6 @@
     border-bottom: 1px solid white;
 }
 
-.quote-editing {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f9fca3;
-    backdrop-filter: blur(5px);
-    z-index: 100;
-    flex-direction: column;
-    /* gap: 10px; */
-}
-
-.quote-editing .container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    flex-direction: column;
-}
-
-.quote-editing.show {
-    display: flex;
-}
-
-.quote-editing :where(form, .exit) {
+.quote-editing form {
     box-shadow: var(--shadow);
-}
-
-.quote-editing .exit {
-    font-size: 1.8rem;
-    width: 45px;
-    height: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--red-color);
-    color: var(--light-color);
-    border-radius: 50%;
-    border: var(--border);
-    cursor: pointer;
 }

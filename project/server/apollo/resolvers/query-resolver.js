@@ -6,10 +6,10 @@ const queryResolver = {
   Query: {
     userAuthentication: async (parent, { username, password }, context) => {
       try {
-        let message = await User.checkUserAuthentication(username, password);
-        return { success: true, message: message };
+        let {message, user} = await User.checkUserAuthentication(username, password);
+        return { success: true, message, user };
       } catch (error) {
-        return { success: false, message: error };
+        return { success: false, message: error.message, user: null };
       }
     },
     users: async (parent, args, context) => {
@@ -29,7 +29,9 @@ const queryResolver = {
       }
     },
     quotes: async (parent, { loggedInUser, username, offset }, context) => {
+      // The loggedInUser will be used in the Quote model.
       if (!loggedInUser) {
+        // Try to take the logged in user from authorization header if it's not provided
         const token = context.req.headers.authorization;
         loggedInUser = decodeJWT(token).username;
       }
@@ -46,8 +48,10 @@ const queryResolver = {
       }
     },
     quote: async (parent, { id, loggedInUser }, context) => {
+      // The loggedInUser will be used in the Quote model.
       if (!loggedInUser) {
         const token = context.req.headers.authorization;
+        // Try to take the logged in user from authorization header if it's not provided
         loggedInUser = decodeJWT(token).username;
       }
       try {
@@ -55,6 +59,14 @@ const queryResolver = {
         return quote;
       } catch (error) {
         return null;
+      }
+    },
+    quotesSearch: async (parent, { word }, context) => {
+      try {
+        let quotes = await Quote.searchQuotes(word);
+        return quotes;
+      } catch (error) {
+        return [];
       }
     },
   },

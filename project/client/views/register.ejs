@@ -16,11 +16,11 @@
             <%- include('partials/messages') %>
             <form action="#" method="POST">
                 <label for="username">Username:</label>
-                <input type="text" name="username" id="username" placeholder="Enter here your username" required>
+                <input type="text" name="username" id="username" placeholder="Enter here your username" >
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
-                        Username must be between 5 and 20 characters long
+                        Username must be between 1 and 20 characters long
                     </span>
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
@@ -28,15 +28,19 @@
                     </span>
                 </div>
                 <label for="email">Email:</label>
-                <input type="text" name="email" id="email" placeholder="Enter here your email" required>
+                <input type="text" name="email" id="email" placeholder="Enter here your email">
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
                         You cannot register with an already existing email
                     </span>
+                    <span class="hint">
+                        <i class="fa-solid fa-chevron-right"></i>
+                        Email must be between 10 and 50 characters long
+                    </span>
                 </div>
                 <label for="password">Password:</label>
-                <input type="password" name="password" id="password" placeholder="Enter here your password" required>
+                <input type="password" name="password" id="password" placeholder="Enter here your password" >
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
@@ -48,7 +52,7 @@
                     </span>
                 </div>
                 <label for="confirm-password">Confirm password:</label>
-                <input type="password" name="confirm_password" id="confirm-password" placeholder="Enter here again your password" required>
+                <input type="password" name="confirm_password" id="confirm-password" placeholder="Enter here again your password">
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
@@ -60,7 +64,7 @@
                     </span>
                 </div>
                 <label for="first-name">First name:</label>
-                <input type="text" name="first_name" id="first-name" placeholder="Enter here your first name" required>
+                <input type="text" name="first_name" id="first-name" placeholder="Enter here your first name">
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>
@@ -72,7 +76,7 @@
                     </span>
                 </div>
                 <label for="last-name">Last name:</label>
-                <input type="text" name="last_name" id="last-name" placeholder="Enter here your second name" required>
+                <input type="text" name="last_name" id="last-name" placeholder="Enter here your second name">
                 <div class="hints">
                     <span class="hint">
                         <i class="fa-solid fa-chevron-right"></i>

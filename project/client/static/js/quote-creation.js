@@ -3,7 +3,7 @@ import { sendDeleteQuoteRequest, sendLikeQuote, sendDislikeQuote } from "./quote
 function createQuoteElement(quote) {
     let quoteElement = document.createElement("article");
     quoteElement.classList.add("quote");
-    quoteElement.setAttribute("data-id", quote.id);
+    quoteElement.setAttribute("data-id", quote._id);
     quoteElement.innerHTML = `
         ${quote.isOwned ? addSettingsOption(quote) : ''}
         <div class="likes ${quote.isLiked ? 'active' : ''} ${quote.isLogged ? 'clicked' : ''}">
@@ -62,7 +62,7 @@ function addQuoteEditEvent(quoteElement) {
 function addQuoteDeleteEvent(quoteElement) {
     quoteElement.querySelector(".delete").addEventListener("click", async function (event) {
         event.preventDefault();
-        let quoteId = +quoteElement.getAttribute("data-id");
+        let quoteId = quoteElement.getAttribute("data-id");
         let response = await sendDeleteQuoteRequest(quoteId);
         if (response.success) {
             quoteElement.parentNode.removeChild(quoteElement);
@@ -73,7 +73,7 @@ function addQuoteDeleteEvent(quoteElement) {
 function addLikeEvent(quoteElement) {
     quoteElement.querySelector(".likes").addEventListener("click", async function (event) {
         event.preventDefault();
-        let quoteId = +quoteElement.getAttribute("data-id");
+        let quoteId = quoteElement.getAttribute("data-id");
         let numberOfLikes = this.querySelector("p:last-child");
         let response;
         if (this.classList.contains("active")) {
