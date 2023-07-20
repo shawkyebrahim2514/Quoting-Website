@@ -49,13 +49,13 @@ function addQuoteSettingsEvents(quoteElement) {
 }
 
 function addQuoteEditEvent(quoteElement) {
-    quoteElement.querySelector(".edit").addEventListener("click", function (event) {
+    quoteElement.querySelector(".quote .settings .edit").addEventListener("click", function (event) {
         event.preventDefault();
         let quoteEditing = document.querySelector(".quote-editing");
         quoteEditing.classList.toggle("show");
         quoteEditing.attributes["data-id"].value = quoteElement.getAttribute("data-id");
-        quoteEditing.querySelector("input#title").value = quoteElement.querySelector(".title").textContent;
-        quoteEditing.querySelector("textarea#content").value = quoteElement.querySelector(".content p").textContent;
+        quoteEditing.querySelector("input#title").setAttribute("value", quoteElement.querySelector(".quote-info .title").textContent);
+        quoteEditing.querySelector("textarea#content").textContent = quoteElement.querySelector(".content p").textContent;
     });
 }
 
