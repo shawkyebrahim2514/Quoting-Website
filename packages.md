@@ -94,3 +94,9 @@
 * JSON Web Tokens are a compact and self-contained way to securely transmit information between parties as a JSON object.
 * This package provides functions for creating JWTs, verifying their validity, and decoding their contents.
 * It is commonly used for authentication and authorization in web applications, where tokens are issued to authenticated users and used to grant access to protected resources.
+
+```bash
+    npm install mongodb
+```
+
+* This package is a Node.js driver for MongoDB, a popular NoSQL database.
