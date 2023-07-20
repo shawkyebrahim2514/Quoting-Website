@@ -23,7 +23,7 @@ A web application that allows users to share their favorite quotes, search for e
 
 - User registration and authentication using JSON Web Tokens (JWT) for secure authentication and authorization.
 - Users can create, search, edit, or delete quotes!
-- Search bar where users can search for quotes that contain any word.
+- Search bar where users can search for quotes that contain any word (I used MongoDB Atlas Search here)
 - View a list of quotes with their titles and content to explore the quotes shared by others.
 - A profile page for each user shows his information and his shared quotes.
 - A user-friendly interface with a responsive design for a seamless browsing experience across different devices.
