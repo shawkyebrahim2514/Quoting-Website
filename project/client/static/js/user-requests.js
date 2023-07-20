@@ -1,27 +1,23 @@
 import User from "../graphql/User.js";
 
-async function sendRegisterationRequest(form) {
-    let formData = new FormData(form);
-    let serializedData = new URLSearchParams(formData).toString();
+async function sendRegisterationRequest(formData) {
     const response = await (await fetch('/register', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: serializedData,
+        body: JSON.stringify(formData),
     })).json();
     return response;
 }
 
-async function sendLoginRequest(form) {
-    let formData = new FormData(form);
-    let serializedData = new URLSearchParams(formData).toString();
+async function sendLoginRequest(formData) {
     const response = await (await fetch('/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
         },
-        body: serializedData,
+        body: JSON.stringify(formData),
     })).json();
     return response;
 }

@@ -21,7 +21,8 @@ function addFormSubmitEvent() {
                 window.scrollTo(0, 0);
                 return;
             }
-            let response = await sendRegisterationRequest(this);
+            let formData = parseFormData(this);
+            let response = await sendRegisterationRequest(formData);
             if (response.success) {
                 window.location.href = "./";
             } else {
@@ -30,6 +31,18 @@ function addFormSubmitEvent() {
             }
         })();
     });
+}
+
+function parseFormData(form) {
+    let formData = {
+        first_name: form.elements['first-name'].value,
+        last_name: form.elements['last-name'].value,
+        username: form.elements['username'].value,
+        email: form.elements['email'].value,
+        password: form.elements['password'].value,
+        bio: form.elements['bio'].value,
+    }
+    return formData;
 }
 
 function checkMatchedPasswords(form) {

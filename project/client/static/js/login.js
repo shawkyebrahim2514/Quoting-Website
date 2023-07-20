@@ -20,7 +20,8 @@ function addFormSubmitEvent() {
                 window.scrollTo(0, 0);
                 return;
             }
-            let response = await sendLoginRequest(this);
+            let formData = parseFormData(this);
+            let response = await sendLoginRequest(formData);
             if (response.success) {
                 window.location.href = "./";
             } else {
@@ -29,4 +30,12 @@ function addFormSubmitEvent() {
             }
         })();
     });
+}
+
+function parseFormData(form) {
+    let formData = {
+        username: form.elements['username'].value,
+        password: form.elements['password'].value
+    }
+    return formData;
 }

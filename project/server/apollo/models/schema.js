@@ -108,6 +108,8 @@ const typeDefs = gql`
     first_name: String!
     "The last name of the user"
     last_name: String!
+    "Bio of the user"
+    bio: String!
   }
 
   "Payload type for creating a new user, it will return a success (false or true) and message"

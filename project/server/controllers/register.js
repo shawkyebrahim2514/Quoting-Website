@@ -34,6 +34,7 @@ function parseRegisterRequestBody(req) {
         email: req.body.email,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
+        bio: req.body.bio
     };
     return user;
 }

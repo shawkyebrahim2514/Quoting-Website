@@ -21,12 +21,14 @@ function checkValidRegistrationInputs(form) {
     let email = form.elements['email'].value;
     let firstName = form.elements['first-name'].value;
     let lastName = form.elements['last-name'].value;
+    let bio = form.elements['bio'].value;
     let fields = {
         "username": checkValidUsername(username),
         "password": checkValidPassword(password),
         "email": checkValidEmail(email),
         "first-name": checkValidName(firstName),
         "last-name": checkValidName(lastName),
+        "bio": checkValidBio(bio)
     }
     return fields;
 }

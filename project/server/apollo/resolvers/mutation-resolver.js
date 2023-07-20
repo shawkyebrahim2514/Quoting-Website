@@ -6,8 +6,6 @@ const { decodeJWT } = require("../../controllers/util/authentications");
 const mutationResolver = {
     Mutation: {
         createUser: async (_, { input }, context) => {
-            // Make the bio to be empty in the first time the user is created
-            input.bio = "";
             let userValidation = checkUserInputValidation(input);
             if (!userValidation.valid) {
                 return { success: false, message: userValidation.message };
