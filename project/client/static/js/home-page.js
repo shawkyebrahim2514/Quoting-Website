@@ -13,6 +13,8 @@ window.addEventListener('load', () => {
     hideOverlay();
 });
 
+// This will take the username from the url if the current page is a profile page
+// This will be an empty string if the current page is the home page
 let quotes = getQuotes(document.location.pathname.split("/").at(-1));
 
 function addLoadMoreEvent() {

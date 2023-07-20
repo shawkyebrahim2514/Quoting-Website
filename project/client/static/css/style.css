@@ -163,10 +163,10 @@ main .container {
     background-color: var(--main-color);
     color: var(--light-color);
     border-radius: var(--border-radius);
+    border: var(--border);
     cursor: pointer;
     font-weight: bold;
     padding: 0.5rem 1rem;
-    border: none;
     margin: 0 auto;
     display: block;
     width: fit-content;
