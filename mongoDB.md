@@ -9,6 +9,7 @@
     - [Indexes for the collection `users`](#indexes-for-the-collection-users)
     - [Indexes for the collection `quotes`](#indexes-for-the-collection-quotes)
     - [Indexes for the collection `quoteLikes`](#indexes-for-the-collection-quotelikes)
+  - [MongoDB Atlas Search](#mongodb-atlas-search-index)
 
 ## Validations
 
@@ -130,18 +131,36 @@ db.runCommand( {
 ### Indexes for the collection `users`
 
 ```js
-    db.users.createIndex( { username: 1 }, { unique: true } )
-    db.users.createIndex( { email: 1 }, { unique: true } )
+db.users.createIndex( { username: 1 }, { unique: true } )
+db.users.createIndex( { email: 1 }, { unique: true } )
 ```
 
 ### Indexes for the collection `quotes`
 
 ```js
-    db.quotes.createIndex({ username: 1, created_at: -1 })
+db.quotes.createIndex({ username: 1, created_at: -1 })
 ```
 
 ### Indexes for the collection `quoteLikes`
 
 ```js
-    db.quoteLikes.createIndex({ quote_id: 1, username: 1 }, { unique: true })
+db.quoteLikes.createIndex({ quote_id: 1, username: 1 }, { unique: true })
+```
+
+## MongoDB Atlas Search Index
+
+```js
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "content": {
+        "type": "autocomplete"
+      },
+      "title": {
+        "type": "autocomplete"
+      }
+    }
+  }
+}
 ```
