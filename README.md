@@ -21,12 +21,19 @@ A web application that allows users to share their favorite quotes, search for e
 
 ## Features
 
-- User registration and authentication using JSON Web Tokens (JWT) for secure authentication and authorization.
-- Users can create, search, edit, or delete quotes!
-- Search bar where users can search for quotes that contain any word (I used MongoDB Atlas Search here)
-- View a list of quotes with their titles and content to explore the quotes shared by others.
-- A profile page for each user shows his information and his shared quotes.
-- A user-friendly interface with a responsive design for a seamless browsing experience across different devices.
+- Home Page: Check out the most liked quotes displayed at the top, and use the search bar to find any quote quickly. Logged-in users can also create their own quotes using the convenient form.
+- Profile Page: View user information, including their first name, last name, and bio. And his shared quotes will be appeared in descending order based on the creation time.
+- Edit and Delete: Users have full control over their shared quotes. By clicking on the settings icon, they can easily edit or delete their quotes. This feature is exclusive to logged-in users.
+- Like & Dislike: Express your appreciation for quotes by liking them. The liked quotes will be highlighted, giving you a personalized experience.
+- Settings Page: Personalize your profile by changing your information, such as first name, last name, bio, or password.
+- The login page allows the user to log in to this website using his username and password.
+- The registration page allows the user to fill his information (username, password, email, first name, last name, and bio) to register on this website.
+- Enhanced the UX by designing all forms with intuitive and user-friendly interfaces. The forms provide validation feedback, indicating incorrect fields with red colors, and displaying readable error messages on submission.
+- Secure Authentication: I've implemented JWT (JSON Web Tokens) for robust authentication and authorization, ensuring the safety of user data.
+- Seamless Client-Server Interaction: Utilizing GraphQL, all client requests are efficiently handled, making the user experience smooth and responsive.
+- The website relies on MongoDB to store all user data, including users' information, quotes, and quote likes.
+- Quick Quote Search: I've leveraged MongoDB Atlas Search to enable users to find quotes by entering any word. Autocomplete fields for titles and content enhance the search experience.
+- Clean Code & Modularity: Throughout the development process, I prioritized refactoring and maintained clean code practices. The project is organized into modules to prevent duplication and ensure easy modifications.
 
 ## Getting Started
 
@@ -60,19 +67,19 @@ To run this project locally, you need to have the following prerequisites instal
 
 1. Start the development server:
 
-   ```bash
-     npm start
-   ```
+```bash
+ npm start
+```
 
-    - This will start the server and make the application available at <http://localhost:4000>.
+- This will start the server and make the application available at <http://localhost:4000>.
   
-  or
+or
 
-    ```bash
-      npm run nodemon
-    ```
+```bash
+  npm run nodemon
+```
 
-    - This will start the server using the nodemon package.
+- This will start the server using the nodemon package.
 
 2. Open your web browser and navigate to <http://localhost:4000> to access the Quoting Website.
 
