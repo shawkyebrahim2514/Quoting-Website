@@ -1,15 +1,12 @@
-const express = require("express");
-const router = express.Router();
 const User = require("./graphql/User");
-const { checkUserUnloggedIn, createJWTTokenInCookie } = require("./util/authentications.js");
+const { createJWTTokenInCookie } = require("./util/authentications.js");
 
-// User who want to visit this page must be logged out
-router.get("/", checkUserUnloggedIn, (req, res) => {
+const getRegistrationPage = (req, res) => {
     // There isn't any authenticated object because the user who can visit this page is not logged in
     res.render("register");
-});
+};
 
-router.post("/", (req, res) => {
+const postRegistration = (req, res) => {
     (async () => {
         try {
             let user = parseRegisterRequestBody(req);
@@ -25,7 +22,7 @@ router.post("/", (req, res) => {
             res.status(500).json({ success: false, message: 'Internal server error' });
         }
     })();
-});
+};
 
 function parseRegisterRequestBody(req) {
     let user = {
@@ -39,4 +36,7 @@ function parseRegisterRequestBody(req) {
     return user;
 }
 
-module.exports = { registerController: router };
+module.exports = {
+    getRegistrationPage,
+    postRegistration
+};

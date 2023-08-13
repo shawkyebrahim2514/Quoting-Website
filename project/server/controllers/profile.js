@@ -1,9 +1,7 @@
-const express = require("express");
-const router = express.Router();
 const User = require("./graphql/User");
 const { decodeJWT } = require("./util/authentications");
 
-router.get("/:username", (req, res) => {
+const getProfile = (req, res) => {
     (async () => {
         const decodedToken = decodeJWT(req.headers.authorization);
         // Send this request to the GraphQL server
@@ -25,11 +23,11 @@ router.get("/:username", (req, res) => {
             authenticated: { username: decodedToken.username }
         });
     })();
-});
+};
 
 function checkProfileAuthorization(req, decodedToken) {
     // Checks if the logged in user is the owner of this profile
-    return decodedToken && decodedToken.username === req.params.username ? true : false;
+    return decodedToken?.username === req.params.username;
 }
 
-module.exports = { profileController: router };
+module.exports = { getProfile };

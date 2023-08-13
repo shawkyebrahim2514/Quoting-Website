@@ -1,8 +1,7 @@
-const router = require("express").Router();
 const User = require("./graphql/User");
-const { checkUserLoggedIn, decodeJWT } = require("./util/authentications.js");
+const { decodeJWT, clearJWTCookie } = require("./util/authentications.js");
 
-router.get("/", (req, res) => {
+const getHomePage = (req, res) => {
     // Check the validation of the JWT token
     const decodedToken = decodeJWT(req.headers.authorization);
     // authenticated is an object that used in the navbar and
@@ -10,10 +9,10 @@ router.get("/", (req, res) => {
     res.render("home-page", {
         authenticated: { username: decodedToken.username }
     });
-});
+};
 
 // User who want to visit this page must be logged in
-router.get("/settings", checkUserLoggedIn, (req, res) => {
+const getSettingsPage = (req, res) => {
     (async () => {
         // Check the validation of the JWT token
         const decodedToken = decodeJWT(req.headers.authorization);
@@ -23,13 +22,26 @@ router.get("/settings", checkUserLoggedIn, (req, res) => {
         // and to fill the default value of the settings' form
         res.render("profile-settings", { authenticated: user });
     })();
-});
+};
 
 // User who want to logout must be logged in
-router.post("/logout", checkUserLoggedIn, (req, res) => {
-    // Clear the JWT token from the cookies, JWT is stored with `token` key
-    res.clearCookie('token');
+const postLogout = (req, res) => {
+    clearJWTCookie(res);
     res.json({ success: true, message: 'Logout successful' });
-});
+};
 
-module.exports = { mainController: router };
+const getErrorPage = (req, res, next) => {
+    // Check the validation of the JWT token
+    const decodedToken = decodeJWT(req.headers.authorization);
+    // authenticated is an object that used in the navbar of this page
+    res.render('404', {
+        authenticated: { username: decodedToken.username }
+    });
+}
+
+module.exports = {
+    getHomePage,
+    getSettingsPage,
+    postLogout,
+    getErrorPage
+};

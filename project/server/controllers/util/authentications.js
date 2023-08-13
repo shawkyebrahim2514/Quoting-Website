@@ -14,7 +14,7 @@ function checkUserLoggedIn(req, res, next) {
     next();
 }
 
-function checkUserUnloggedIn(req, res, next) {
+function checkUserLoggedOut(req, res, next) {
     const token = req.headers.authorization;
     // If the headers doesn't contain the JWT token in the `Authorization` header
     if (!token) {
@@ -33,7 +33,16 @@ function createJWTTokenInCookie(user, res) {
     // Store the JWT token in the cookies, JWT is stored with `token` key
     // The token will be expired after 1 hour
     // The encode is string to prevent the encoded the space character between `Bearer` and the token
-    res.cookie('token', `Bearer ${token}`, { httpOnly: true, maxAge: 3600000, encode: String });
+    // The secure option is disabled because the server is running on HTTP at the development environment
+    //      Turn on the secure option when the server is running on HTTPS at the production environment
+    res.cookie('token', `Bearer ${token}`, { httpOnly: true, secure: true, maxAge: 3600000, encode: String });
+}
+
+function clearJWTCookie(res) {
+    // Clear the JWT token from the cookies, JWT is stored with `token` key
+    // The secure option is disabled because the server is running on HTTP at the development environment
+    //      Turn on the secure option when the server is running on HTTPS at the production environment
+    res.clearCookie('token', { httpOnly: true, secure: true, });
 }
 
 function createJWTToken(user) {
@@ -63,7 +72,8 @@ function decodeJWT(authHeader) {
 
 module.exports = {
     checkUserLoggedIn,
-    checkUserUnloggedIn,
+    checkUserLoggedOut,
     createJWTTokenInCookie,
+    clearJWTCookie,
     decodeJWT
 };
